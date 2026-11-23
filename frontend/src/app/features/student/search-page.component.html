@@ -1,0 +1,56 @@
+<div class="page-head">
+  <div>
+    <p class="page-kicker">Discover</p>
+    <h1 class="page-title">Search materials</h1>
+    <p class="page-lead">Find notes, lectures, and files across your enrolled courses.</p>
+  </div>
+</div>
+
+<div class="card card-pad" style="margin-bottom: var(--space-5)">
+  <form class="form-grid" [formGroup]="form" (ngSubmit)="run()">
+    <div class="grid-2">
+      <div class="field">
+        <label for="searchQ">Keywords</label>
+        <input id="searchQ" class="input" placeholder="Title or description" formControlName="q" />
+      </div>
+      <div class="field">
+        <label for="searchType">Type</label>
+        <select id="searchType" class="select" formControlName="type">
+          <option value="">All types</option>
+          <option value="NOTE">Notes</option>
+          <option value="LECTURE">Lectures</option>
+          <option value="OTHER">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label for="searchTag">Tag</label>
+        <input id="searchTag" class="input" placeholder="e.g. graphs" formControlName="tag" />
+      </div>
+      <div class="field" style="align-self: end">
+        <button class="btn btn-primary w-100" type="submit">Search</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+@if (searched && results.length === 0) {
+  <p class="page-lead">No results in your courses.</p>
+}
+@if (results.length > 0) {
+  <div class="card card-pad">
+    <div class="list">
+      @for (r of results; track r.id) {
+        <a class="list-item" [routerLink]="['/student/resources', r.id]">
+          <div class="file-icon" [class.mp4]="r.resourceType === 'LECTURE'">{{ r.resourceType === 'LECTURE' ? 'MP4' : 'PDF' }}</div>
+          <div style="flex: 1">
+            <div class="title">{{ r.title }}</div>
+            <div class="sub">{{ r.courseCode }} · {{ r.tags.join(', ') || '—' }}</div>
+          </div>
+          <span class="badge">{{ r.resourceType }}</span>
+        </a>
+      }
+    </div>
+  </div>
+}

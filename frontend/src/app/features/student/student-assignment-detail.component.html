@@ -1,0 +1,43 @@
+@if (error) {
+  <div class="setu-alert setu-alert-danger">{{ error }}</div>
+}
+@if (message) {
+  <div class="setu-alert setu-alert-success">{{ message }}</div>
+}
+@if (assignment) {
+  <div class="page-head">
+    <div>
+      <p class="page-kicker">Assignment</p>
+      <h1 class="page-title">{{ assignment.title }}</h1>
+      @if (assignment.description) {
+        <p class="page-lead">{{ assignment.description }}</p>
+      }
+      <p class="field hint">Due {{ formatInstant(assignment.dueAt) }} · Max {{ assignment.maxMarks }} marks</p>
+    </div>
+  </div>
+
+  @if (assignment.mySubmission?.status === 'GRADED') {
+    <div class="card card-pad" style="margin-bottom: var(--space-4)">
+      <div class="card-title">Your grade</div>
+      <p>
+        <strong>{{ assignment.mySubmission?.marks }}</strong> / {{ assignment.maxMarks }}
+      </p>
+      @if (assignment.mySubmission?.feedback) {
+        <p class="page-lead">{{ assignment.mySubmission?.feedback }}</p>
+      }
+    </div>
+  } @else if (assignment.mySubmission) {
+    <p class="text-success">Submitted — you can replace until the deadline.</p>
+  }
+
+  <div class="card card-pad">
+    <h2 class="card-title" style="margin-bottom: 12px">Submit work</h2>
+    <form class="form-grid">
+      <div class="field">
+        <label for="asgFile">Upload (PDF, etc.)</label>
+        <input id="asgFile" class="input" type="file" (change)="onFile($event)" />
+      </div>
+      <button class="btn btn-primary" type="button" (click)="submit()">Submit / replace</button>
+    </form>
+  </div>
+}

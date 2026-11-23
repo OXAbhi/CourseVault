@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin dashboard · Setu · Nexus Institute of Technology</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <div class="backdrop" id="backdrop"></div>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="index.html">
+        <img class="brand-mark" src="assets/logo.svg" alt="" />
+        <span>
+          <div class="brand-name">Setu</div>
+          <div class="brand-sub">Nexus Institute</div>
+        </span>
+      </a>
+      <div class="role-pill">admin</div>
+      <nav class="nav">
+        <div class="nav-section">Menu</div>
+        <a class="nav-link is-active" href="admin-dashboard.html"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+        <a class="nav-link" href="admin-dashboard.html#users"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="16" cy="9" r="2.5"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M14 19a4.5 4.5 0 0 1 6.5-4"/></svg>Users</a>
+        <a class="nav-link" href="admin-dashboard.html#courses"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg>Courses</a>
+        <a class="nav-link" href="admin-dashboard.html#batches"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/></svg>Batches</a>
+        <a class="nav-link" href="admin-dashboard.html#enrollments"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="3.5"/><path d="M19 8v6M16 11h6"/></svg>Enrollments</a>
+        <a class="nav-link" href="profile-admin.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 19.2a7 7 0 0 1 14 0"/></svg>Profile</a>
+      </nav>
+      <a class="sidebar-user" href="profile-admin.html">
+        <div class="avatar">RD</div>
+        <div class="meta">
+          <div class="name">Rohan Deshpande</div>
+          <div class="id">System administrator</div>
+        </div>
+      </a>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <form class="search" action="#" onsubmit="return false">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+          <input type="search" placeholder="Search notes, lectures, or courses" aria-label="Search" />
+        </form>
+        <div class="topbar-actions">
+          <button class="icon-btn" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5"/><path d="M9.5 17a2.5 2.5 0 0 0 5 0"/></svg>
+            <span class="dot"></span>
+          </button>
+          <a class="chip" href="profile-admin.html">
+            <span class="avatar sm">RD</span>
+            <span class="chip-text">Admin · Nexus Institute</span>
+          </a>
+        </div>
+      </header>
+      <main class="content">
+
+        <div class="page-head">
+          <div>
+            <p class="page-kicker">Institute admin</p>
+            <h1 class="page-title">Nexus Learning Portal</h1>
+            <p class="page-lead">Issue accounts, assign teachers, and enroll students in the right batch. There is no public sign-up in production.</p>
+          </div>
+          <button class="btn btn-primary" type="button"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> New user</button>
+        </div>
+        <div class="grid-4" style="margin-bottom:24px">
+          <div class="card stat"><div class="label">Users</div><div class="value">218</div><div class="delta">12 faculty · 205 students</div></div>
+          <div class="card stat"><div class="label">Courses</div><div class="value">16</div><div class="delta">Active this semester</div></div>
+          <div class="card stat"><div class="label">Batches</div><div class="value">9</div><div class="delta">AY 2024–25</div></div>
+          <div class="card stat"><div class="label">Pending approvals</div><div class="value">2</div><div class="delta is-warn">Teacher requests</div></div>
+        </div>
+        <div id="users" class="card" style="margin-bottom:24px;overflow:hidden">
+          <div class="card-pad" style="padding-bottom:0">
+            <div class="card-head"><h2 class="card-title">User management</h2><span class="badge badge-warning">2 teachers awaiting approval</span></div>
+          </div>
+          <div class="table-wrap">
+            <table class="data">
+              <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><div class="row"><span class="avatar sm">KJ</span> Dr. Kavita Joshi</div></td>
+                  <td>kavita.joshi@nexus.ac.in</td>
+                  <td><span class="badge badge-primary">Teacher</span></td>
+                  <td><span class="badge badge-warning" data-status>Pending approval</span></td>
+                  <td><div class="row row-actions"><button class="btn btn-success btn-sm" type="button" data-approve>Approve</button><button class="btn btn-danger-ghost btn-sm" type="button">Decline</button></div></td>
+                </tr>
+                <tr>
+                  <td><div class="row"><span class="avatar sm">AM</span> Aditya Menon</div></td>
+                  <td>aditya.menon@nexus.ac.in</td>
+                  <td><span class="badge badge-primary">Teacher</span></td>
+                  <td><span class="badge badge-warning" data-status>Pending approval</span></td>
+                  <td><div class="row row-actions"><button class="btn btn-success btn-sm" type="button" data-approve>Approve</button><button class="btn btn-danger-ghost btn-sm" type="button">Decline</button></div></td>
+                </tr>
+                <tr>
+                  <td><div class="row"><span class="avatar sm">AI</span> Prof. Ananya Iyer</div></td>
+                  <td>ananya.iyer@nexus.ac.in</td>
+                  <td><span class="badge badge-primary">Teacher</span></td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td><button class="btn btn-ghost btn-sm" type="button">Edit</button></td>
+                </tr>
+                <tr>
+                  <td><div class="row"><span class="avatar sm">PS</span> Priya Sharma</div></td>
+                  <td>priya.sharma@nexus.ac.in</td>
+                  <td><span class="badge">Student</span></td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td><button class="btn btn-ghost btn-sm" type="button">Edit</button></td>
+                </tr>
+                <tr>
+                  <td><div class="row"><span class="avatar sm">AN</span> Arjun Nair</div></td>
+                  <td>arjun.nair@nexus.ac.in</td>
+                  <td><span class="badge">Student</span></td>
+                  <td><span class="badge">Inactive</span></td>
+                  <td><button class="btn btn-ghost btn-sm" type="button">Activate</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="courses" class="card" style="margin-bottom:24px;overflow:hidden">
+          <div class="card-pad" style="padding-bottom:0">
+            <div class="card-head"><h2 class="card-title">Courses</h2><button class="btn btn-soft btn-sm" type="button">Add course</button></div>
+          </div>
+          <div class="table-wrap">
+            <table class="data">
+              <thead><tr><th>Code</th><th>Title</th><th>Teacher</th><th>Batches</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td class="course-code">CS301</td><td>Data Structures and Algorithms</td><td>Prof. Ananya Iyer</td><td>Section A, Section B</td><td><span class="badge badge-success">Active</span></td></tr>
+                <tr><td class="course-code">CS302</td><td>Database Management Systems</td><td>Dr. Rahul Mehta</td><td>Section A</td><td><span class="badge badge-success">Active</span></td></tr>
+                <tr><td class="course-code">CS303</td><td>Operating Systems</td><td>Prof. Sneha Kulkarni</td><td>Section A, Section B</td><td><span class="badge badge-success">Active</span></td></tr>
+                <tr><td class="course-code">CS304</td><td>Computer Networks</td><td>Dr. Vikram Rao</td><td>Section A</td><td><span class="badge badge-success">Active</span></td></tr>
+                <tr><td class="course-code">CS210</td><td>Discrete Mathematics</td><td>Dr. Neha Patil</td><td>Section C</td><td><span class="badge">Retired</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card card-pad" id="batches">
+            <div class="card-head"><h2 class="card-title">Batches</h2></div>
+            <div class="list">
+              <div class="list-item"><div style="flex:1"><div class="title">CSE 2024–25 Section A</div><div class="sub">48 students · CS301, CS302, CS303, CS304</div></div></div>
+              <div class="list-item"><div style="flex:1"><div class="title">CSE 2024–25 Section B</div><div class="sub">46 students · CS301, CS303</div></div></div>
+              <div class="list-item"><div style="flex:1"><div class="title">CSE 4th year Elective</div><div class="sub">28 students · CS401</div></div></div>
+            </div>
+          </div>
+          <div class="card card-pad" id="enrollments">
+            <div class="card-head"><h2 class="card-title">Recent enrollments</h2></div>
+            <div class="list">
+              <div class="list-item"><div style="flex:1"><div class="title">Priya Sharma → Section A</div><div class="sub">Enrolled 1 Aug 2024 · Active</div></div></div>
+              <div class="list-item"><div style="flex:1"><div class="title">Meera Kulkarni → Section A</div><div class="sub">Enrolled 1 Aug 2024 · Active</div></div></div>
+              <div class="list-item"><div style="flex:1"><div class="title">Arjun Nair → Section B</div><div class="sub">Dropped 12 Sep 2024</div></div><span class="badge">Dropped</span></div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

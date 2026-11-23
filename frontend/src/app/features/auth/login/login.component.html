@@ -1,0 +1,61 @@
+<div class="auth">
+  <section class="auth-panel">
+    <a class="brand" routerLink="/">
+      <img class="brand-mark" src="assets/logo.svg" alt="" />
+      <span>
+        <div class="brand-name">Setu</div>
+        <div class="brand-sub">Nexus Institute of Technology, Nagpur</div>
+      </span>
+    </a>
+    <div class="auth-copy">
+      <h2>One place for notes, lectures, and assignments.</h2>
+      <p>
+        Setu replaces scattered file shares with enrollment-based access for every batch at Nexus Institute.
+      </p>
+      <ul class="auth-points">
+        <li><span>&#10003;</span> Students only see courses they are enrolled in</li>
+        <li><span>&#10003;</span> Teachers upload to Cloudinary — files stay after a server restart</li>
+        <li><span>&#10003;</span> Deadlines, submissions, and grades in one course hub</li>
+      </ul>
+    </div>
+  </section>
+  <section class="auth-form">
+    <div class="auth-card">
+      <p class="page-kicker">Learning portal</p>
+      <h1>Welcome back</h1>
+      <p class="lead">Sign in with the account issued by the institute.</p>
+
+      @if (errorMessage) {
+        <div class="setu-alert setu-alert-danger">{{ errorMessage }}</div>
+      }
+
+      <form class="form-grid" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="field">
+          <label for="username">Username</label>
+          <input id="username" class="input" formControlName="username" autocomplete="username" />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            class="input"
+            type="password"
+            formControlName="password"
+            autocomplete="current-password"
+          />
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" [disabled]="submitting">
+          {{ submitting ? 'Signing in…' : 'Sign in' }}
+        </button>
+      </form>
+
+      <div class="hr-text">Demo accounts</div>
+      <p class="field hint" style="margin: 0">
+        <code>admin</code> / <code>teacher1</code> / <code>student1</code> — password <code>Demo&#64;12345</code>
+      </p>
+      <p class="field hint" style="margin-top: 12px">
+        <a routerLink="/">Back to home</a>
+      </p>
+    </div>
+  </section>
+</div>

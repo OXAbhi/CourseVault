@@ -1,0 +1,73 @@
+<div class="page-head">
+  <div>
+    <p class="page-kicker">Administration</p>
+    <h1 class="page-title">Users</h1>
+  </div>
+</div>
+@if (error) {
+  <div class="setu-alert setu-alert-danger">{{ error }}</div>
+}
+<div class="split">
+  <div class="card" style="overflow: hidden">
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Active</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of users; track u.id) {
+            <tr>
+              <td>{{ u.username }}</td>
+              <td>{{ u.role }}</td>
+              <td>{{ u.active ? 'Yes' : 'No' }}</td>
+              <td>
+                <button class="btn-link" type="button" (click)="toggleActive(u)">
+                  {{ u.active ? 'Deactivate' : 'Activate' }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card card-pad">
+    <h2 class="card-title" style="margin-bottom: 12px">Create user</h2>
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="create()">
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" class="input" formControlName="username" />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" class="input" formControlName="email" />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" class="input" type="password" formControlName="password" />
+      </div>
+      <div class="field">
+        <label for="role">Role</label>
+        <select id="role" class="select" formControlName="role">
+          <option value="TEACHER">Teacher</option>
+          <option value="STUDENT">Student</option>
+          <option value="ADMIN">Admin</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="firstName">First name</label>
+        <input id="firstName" class="input" formControlName="firstName" />
+      </div>
+      <div class="field">
+        <label for="lastName">Last name</label>
+        <input id="lastName" class="input" formControlName="lastName" />
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Create</button>
+    </form>
+  </div>
+</div>

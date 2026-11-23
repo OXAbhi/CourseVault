@@ -1,0 +1,192 @@
+@if (course) {
+  <div class="page-head">
+    <div>
+      <p class="page-kicker">{{ course.code }}</p>
+      <h1 class="page-title">{{ course.title }}</h1>
+      <p class="page-lead">Upload notes, lectures, and manage assignments for this course.</p>
+    </div>
+    <button class="btn btn-primary" type="button" (click)="openUploadModal()">Upload material</button>
+  </div>
+}
+
+@if (uploadMsg) {
+  <div class="setu-alert setu-alert-success">{{ uploadMsg }}</div>
+}
+
+<div class="split">
+  <div class="stack">
+    <div class="card card-pad">
+      <div class="card-head">
+        <h2 class="card-title">Uploaded in this course</h2>
+      </div>
+      @if (resources.length === 0) {
+        <p class="field hint">No materials yet.</p>
+      } @else {
+        <div class="list">
+          @for (r of resources; track r.id) {
+            <div class="list-item">
+              <div class="file-icon" [class.mp4]="r.resourceType === 'LECTURE'">
+                {{ r.resourceType === 'LECTURE' ? 'MP4' : 'PDF' }}
+              </div>
+              <div style="flex: 1">
+                <div class="title">{{ r.title }}</div>
+                <div class="sub">{{ r.resourceType }} · {{ formatInstant(r.createdAt) }}</div>
+              </div>
+              @if (r.published) {
+                <span class="badge badge-success">Published</span>
+              } @else {
+                <span class="badge badge-warning">Draft</span>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+  <div class="stack">
+    <div class="card card-pad">
+      <h2 class="card-title" style="margin-bottom: 12px">New assignment</h2>
+      @if (assignMsg) {
+        <div class="setu-alert setu-alert-success">{{ assignMsg }}</div>
+      }
+      @if (assignError) {
+        <div class="setu-alert setu-alert-danger">{{ assignError }}</div>
+      }
+      <form class="form-grid" [formGroup]="assignForm" (ngSubmit)="createAssignment()">
+        <div class="field">
+          <label for="asgTitle">Title</label>
+          <input id="asgTitle" class="input" formControlName="title" />
+        </div>
+        <div class="field">
+          <label for="asgDesc">Description</label>
+          <textarea id="asgDesc" class="textarea" rows="2" formControlName="description"></textarea>
+        </div>
+        <div class="field">
+          <label for="asgDue">Due</label>
+          <input id="asgDue" class="input" type="datetime-local" formControlName="dueAt" />
+        </div>
+        <div class="field">
+          <label for="asgMarks">Max marks</label>
+          <input id="asgMarks" class="input" type="number" formControlName="maxMarks" />
+        </div>
+        <label class="row" style="font-weight: 500">
+          <input type="checkbox" formControlName="published" style="width: 16px; height: 16px; accent-color: var(--color-primary)" />
+          Published
+        </label>
+        <button class="btn btn-primary" type="submit" [disabled]="assigning">
+          {{ assigning ? 'Creating…' : 'Create assignment' }}
+        </button>
+      </form>
+    </div>
+    <div class="card card-pad">
+      <h2 class="card-title" style="margin-bottom: 12px">Assignments</h2>
+      <div class="list">
+        @for (a of assignments; track a.id) {
+          <a class="list-item" [routerLink]="['/teacher/assignments', a.id, 'grade']">
+            <div style="flex: 1">
+              <div class="title">{{ a.title }}</div>
+              <div class="sub">Due {{ formatInstant(a.dueAt) }}</div>
+            </div>
+          </a>
+        }
+      </div>
+    </div>
+    <div class="card card-pad">
+      <h2 class="card-title" style="margin-bottom: 12px">Batch roster</h2>
+      <div class="list">
+        @for (b of batches; track b.id) {
+          <a class="list-item" [routerLink]="['/teacher/courses', courseId, 'roster', b.id]">
+            <div class="title">{{ b.name }}</div>
+            <div class="sub">{{ b.academicYear }}</div>
+          </a>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (uploadModalOpen) {
+  <div class="backdrop is-on" (click)="closeUploadModal()"></div>
+  <div class="setu-dialog" role="dialog" aria-modal="true" aria-labelledby="uploadTitle">
+    <div class="card card-pad" (click)="$event.stopPropagation()">
+      <h2 id="uploadTitle" class="card-title" style="margin-bottom: 8px">Upload material</h2>
+      <p class="field hint">Allowed: PDF, PPT/PPTX, MP4, WebM · max 100MB</p>
+      @if (uploadError) {
+        <div class="setu-alert setu-alert-danger">{{ uploadError }}</div>
+      }
+      <form class="form-grid" [formGroup]="uploadForm" (ngSubmit)="upload()">
+        <div class="field">
+          <label for="resTitle">Title</label>
+          <input id="resTitle" class="input" formControlName="title" [disabled]="uploading" />
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="resType">Type</label>
+            <select id="resType" class="select" formControlName="resourceType" [disabled]="uploading">
+              <option value="NOTE">Note (PDF)</option>
+              <option value="LECTURE">Lecture (video)</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="resTags">Tags</label>
+            <input id="resTags" class="input" placeholder="comma-separated" formControlName="tags" [disabled]="uploading" />
+          </div>
+        </div>
+        <label class="row" style="font-weight: 500">
+          <input type="checkbox" formControlName="published" [disabled]="uploading" style="width: 16px; height: 16px; accent-color: var(--color-primary)" />
+          Publish (students can see)
+        </label>
+        <div class="field">
+          <label>File</label>
+          <input
+            #fileInput
+            type="file"
+            class="d-none"
+            accept=".pdf,.ppt,.pptx,.mp4,.webm,application/pdf,video/mp4,video/webm"
+            (change)="onUploadFile($event)"
+          />
+          <div
+            class="dropzone"
+            [class.is-uploading]="uploading"
+            (click)="!uploading && openFilePicker()"
+            (dragover)="$event.preventDefault()"
+            (drop)="onFileDrop($event)"
+            role="button"
+            tabindex="0"
+          >
+            @if (!uploading) {
+              <div class="idle">
+                <div class="drop-icon">
+                  <svg viewBox="0 0 24 24"><path d="M12 16V7"/><path d="M8 11l4-4 4 4"/><path d="M5 19h14"/></svg>
+                </div>
+                <h3>Drop a file, or click to browse</h3>
+                @if (selectedFile) {
+                  <p><strong>{{ selectedFile.name }}</strong> ({{ formatFileSize(selectedFile.size) }})</p>
+                } @else {
+                  <p>PDF, PPTX, or MP4 up to 100 MB</p>
+                }
+              </div>
+            }
+            <div class="progress-wrap">
+              <div class="progress-label">
+                <span>{{ uploadStatusLabel }}</span>
+                <span>{{ uploadProgress }}%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width.%]="uploadProgress"></div>
+              </div>
+              @if (selectedFile) {
+                <p class="cloud-tag">{{ selectedFile.name }}</p>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="row" style="justify-content: flex-end; gap: 8px">
+          <button type="button" class="btn btn-ghost" [disabled]="uploading" (click)="closeUploadModal()">Cancel</button>
+          <button class="btn btn-primary" type="submit" [disabled]="uploading">Upload</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

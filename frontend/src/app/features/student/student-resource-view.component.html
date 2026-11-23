@@ -1,0 +1,19 @@
+@if (error) {
+  <div class="setu-alert setu-alert-danger">{{ error }}</div>
+}
+@if (resource) {
+  <div class="page-head">
+    <div>
+      <p class="page-kicker">{{ resource.resourceType }}</p>
+      <h1 class="page-title">{{ resource.title }}</h1>
+      @if (resource.description) {
+        <p class="page-lead">{{ resource.description }}</p>
+      }
+    </div>
+  </div>
+  @if (resource.resourceType === 'LECTURE' && videoUrl) {
+    <video class="setu-video" controls [src]="videoUrl"></video>
+  } @else {
+    <button class="btn btn-primary" type="button" (click)="openDocument()">Open file</button>
+  }
+}

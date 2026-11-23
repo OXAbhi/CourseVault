@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign in · Setu · Nexus Institute of Technology</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <div class="auth">
+    <section class="auth-panel">
+      <a class="brand" href="index.html">
+        <img class="brand-mark" src="assets/logo.svg" alt="" />
+        <span>
+          <div class="brand-name">Setu</div>
+          <div class="brand-sub">Nexus Institute of Technology, Nagpur</div>
+        </span>
+      </a>
+      <div class="auth-copy">
+        <h2>One place for notes, lectures, and assignments.</h2>
+        <p>Setu replaces WhatsApp forwards and lost email attachments with enrollment-based access for every batch at Nexus Institute.</p>
+        <ul class="auth-points">
+          <li><span>&#10003;</span> Students only see courses they are enrolled in</li>
+          <li><span>&#10003;</span> Teachers upload to Cloudinary — files stay after a server restart</li>
+          <li><span>&#10003;</span> Deadlines, submissions, and grades in one course hub</li>
+        </ul>
+      </div>
+    </section>
+    <section class="auth-form">
+      <div class="auth-card">
+        <p class="page-kicker">Learning portal</p>
+        <h1>Welcome back</h1>
+        <p class="lead">Sign in with the account issued by the institute. Demo access is below if you are reviewing the prototype.</p>
+        <div class="segmented" role="tablist">
+          <button type="button" class="is-active" data-auth-toggle="login">Sign in</button>
+          <button type="button" data-auth-toggle="register">Register</button>
+        </div>
+        <form id="login-form" class="auth-form-panel is-active" data-auth="login">
+          <div class="form-grid">
+            <div class="field">
+              <label for="login-email">Email or username</label>
+              <input class="input" id="login-email" type="text" value="priya.sharma@nexus.ac.in" autocomplete="username" />
+            </div>
+            <div class="field">
+              <label for="login-password">Password</label>
+              <input class="input" id="login-password" type="password" value="••••••••" autocomplete="current-password" />
+            </div>
+            <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+          </div>
+        </form>
+        <form id="register-form" class="auth-form-panel" data-auth="register">
+          <div class="form-grid">
+            <div class="field">
+              <label for="reg-name">Full name</label>
+              <input class="input" id="reg-name" type="text" placeholder="e.g. Arjun Nair" />
+            </div>
+            <div class="field">
+              <label for="reg-email">Institute email</label>
+              <input class="input" id="reg-email" type="email" placeholder="name@nexus.ac.in" />
+            </div>
+            <div class="field">
+              <label for="register-role">Role</label>
+              <select class="select" id="register-role">
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+                <option value="admin">Admin</option>
+              </select>
+              <span class="hint">In the production MVP, the admin issues accounts — there is no public sign-up. This role select is for navigating the prototype.</span>
+            </div>
+            <div class="field">
+              <label for="reg-pass">Password</label>
+              <input class="input" id="reg-pass" type="password" placeholder="At least 8 characters" />
+            </div>
+            <button class="btn btn-primary btn-block" type="submit">Continue to dashboard</button>
+          </div>
+        </form>
+        <div class="hr-text">Quick demo access</div>
+        <div class="demo-row">
+          <button class="btn btn-ghost btn-demo" type="button" data-demo-role="student">Student</button>
+          <button class="btn btn-ghost btn-demo" type="button" data-demo-role="teacher">Teacher</button>
+          <button class="btn btn-ghost btn-demo" type="button" data-demo-role="admin">Admin</button>
+        </div>
+        <p class="hint" style="margin-top:16px;color:var(--color-text-muted);font-size:12px">Sample accounts: priya.sharma@nexus.ac.in · ananya.iyer@nexus.ac.in · admin@nexus.ac.in</p>
+      </div>
+    </section>
+  </div>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<div class="page-head">
+  <div>
+    <p class="page-kicker">Sections</p>
+    <h1 class="page-title">Batches</h1>
+  </div>
+</div>
+<div class="card card-pad" style="margin-bottom: var(--space-4)">
+  <div class="field">
+    <label for="coursePick">Course</label>
+    <select id="coursePick" class="select" [value]="courseId" (change)="selectCourse(+$any($event.target).value)">
+      @for (c of courses; track c.id) {
+        <option [value]="c.id">{{ c.code }} — {{ c.title }}</option>
+      }
+    </select>
+  </div>
+</div>
+<div class="split">
+  <div class="card" style="overflow: hidden">
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Year</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (b of batches; track b.id) {
+            <tr>
+              <td>{{ b.name }}</td>
+              <td>{{ b.academicYear }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card card-pad">
+    <h2 class="card-title" style="margin-bottom: 12px">Add batch</h2>
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="create()">
+      <div class="field">
+        <label for="batchName">Batch name</label>
+        <input id="batchName" class="input" formControlName="name" />
+      </div>
+      <div class="field">
+        <label for="academicYear">Academic year</label>
+        <input id="academicYear" class="input" formControlName="academicYear" />
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Add batch</button>
+    </form>
+  </div>
+</div>

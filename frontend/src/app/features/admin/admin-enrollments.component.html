@@ -1,0 +1,57 @@
+<div class="page-head">
+  <div>
+    <p class="page-kicker">Rosters</p>
+    <h1 class="page-title">Enrollments</h1>
+  </div>
+</div>
+
+<div class="card card-pad" style="margin-bottom: var(--space-4)">
+  <form class="form-grid" [formGroup]="form" (ngSubmit)="create()">
+    <div class="grid-2">
+      <div class="field">
+        <label for="studentId">Student</label>
+        <select id="studentId" class="select" formControlName="studentId">
+          @for (s of students; track s.id) {
+            <option [value]="s.id">{{ s.username }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label for="batchId">Batch</label>
+        <select id="batchId" class="select" formControlName="batchId">
+          @for (b of batches; track b.id) {
+            <option [value]="b.id">{{ b.courseCode }} / {{ b.name }}</option>
+          }
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-primary" type="submit">Enroll student</button>
+  </form>
+</div>
+
+<div class="card" style="overflow: hidden">
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Batch</th>
+          <th>Course</th>
+          <th>Status</th>
+          <th>Enrolled</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (e of enrollments; track e.id) {
+          <tr>
+            <td>{{ e.studentUsername }}</td>
+            <td>{{ e.batchName }}</td>
+            <td>{{ e.courseCode }}</td>
+            <td>{{ e.status }}</td>
+            <td>{{ formatInstant(e.enrolledAt) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

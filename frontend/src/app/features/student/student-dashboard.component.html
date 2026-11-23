@@ -1,0 +1,80 @@
+<div class="page-head">
+  <div>
+    <p class="page-kicker">{{ greeting }}</p>
+    <h1 class="page-title">Your courses this semester</h1>
+    <p class="page-lead">
+      {{ courseCount }} enrolled {{ courseCount === 1 ? 'course' : 'courses' }} · {{ unread }} unread
+      {{ unread === 1 ? 'alert' : 'alerts' }}
+    </p>
+  </div>
+</div>
+
+<div class="grid-4" style="margin-bottom: 24px">
+  <div class="card stat">
+    <div class="label">Enrolled courses</div>
+    <div class="value">{{ courseCount }}</div>
+    <div class="delta">All active enrollments</div>
+  </div>
+  <div class="card stat">
+    <div class="label">Unread alerts</div>
+    <div class="value">{{ unread }}</div>
+    <div class="delta" [class.is-warn]="unread > 0">{{ unread ? 'Check notifications' : 'All caught up' }}</div>
+  </div>
+  <div class="card stat">
+    <div class="label">Quick access</div>
+    <a routerLink="/student/courses" class="btn btn-soft btn-sm" style="margin-top: 12px">My courses</a>
+  </div>
+  <div class="card stat">
+    <div class="label">Search</div>
+    <a routerLink="/student/search" class="btn btn-soft btn-sm" style="margin-top: 12px">Find materials</a>
+  </div>
+</div>
+
+<div class="split">
+  <div class="stack">
+    <div class="card-head">
+      <h2 class="card-title">Enrolled courses</h2>
+      <a routerLink="/student/courses" class="btn btn-ghost btn-sm">View all</a>
+    </div>
+  @if (courses.length === 0) {
+    <p class="page-lead">You are not enrolled in any courses yet.</p>
+  } @else {
+    <div class="grid-2">
+      @for (c of courses; track c.id) {
+        <a class="card course-card" [routerLink]="['/student/courses', c.id]">
+          <span class="course-code">{{ c.code }}</span>
+          <h3>{{ c.title }}</h3>
+          <p class="course-meta">{{ c.teacherName }}</p>
+          <div class="course-foot">
+            <span>Open course hub</span>
+            <span class="badge badge-primary">Enrolled</span>
+          </div>
+        </a>
+      }
+    </div>
+  }
+  </div>
+  <div class="stack">
+    <div class="card card-pad">
+      <div class="card-head">
+        <h2 class="card-title">Notifications</h2>
+        <a routerLink="/student/notifications" class="btn btn-ghost btn-sm">Open inbox</a>
+      </div>
+      @if (recentNotifications.length === 0) {
+        <p class="page-lead" style="margin-top: 0">No notifications yet.</p>
+      } @else {
+        <div class="list">
+          @for (n of recentNotifications; track n.id) {
+            <div class="list-item">
+              <div class="avatar sm">N</div>
+              <div>
+                <div class="title">{{ n.title }}</div>
+                <div class="sub">{{ n.body }}</div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

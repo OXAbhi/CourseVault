@@ -1,0 +1,53 @@
+<div class="page-head">
+  <div>
+    <p class="page-kicker">Account</p>
+    <h1 class="page-title">Profile</h1>
+  </div>
+</div>
+
+<div class="split">
+  <div class="card card-pad">
+    <h2 class="card-title" style="margin-bottom: 12px">Account details</h2>
+    @if (profileMessage) {
+      <div class="setu-alert setu-alert-success">{{ profileMessage }}</div>
+    }
+    @if (profileError) {
+      <div class="setu-alert setu-alert-danger">{{ profileError }}</div>
+    }
+    <form class="form-grid" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+      <div class="field">
+        <label for="firstName">First name</label>
+        <input id="firstName" class="input" formControlName="firstName" />
+      </div>
+      <div class="field">
+        <label for="lastName">Last name</label>
+        <input id="lastName" class="input" formControlName="lastName" />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" class="input" formControlName="email" type="email" />
+      </div>
+      <button class="btn btn-primary" type="submit">Save profile</button>
+    </form>
+  </div>
+  <div class="card card-pad">
+    <h2 class="card-title" style="margin-bottom: 12px">Change password</h2>
+    @if (passwordMessage) {
+      <div class="setu-alert setu-alert-success">{{ passwordMessage }}</div>
+    }
+    @if (passwordError) {
+      <div class="setu-alert setu-alert-danger">{{ passwordError }}</div>
+    }
+    <form class="form-grid" [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+      <div class="field">
+        <label for="currentPassword">Current password</label>
+        <input id="currentPassword" class="input" type="password" formControlName="currentPassword" />
+      </div>
+      <div class="field">
+        <label for="newPassword">New password</label>
+        <input id="newPassword" class="input" type="password" formControlName="newPassword" />
+      </div>
+      <button class="btn btn-outline-primary" type="submit">Update password</button>
+    </form>
+  </div>
+</div>

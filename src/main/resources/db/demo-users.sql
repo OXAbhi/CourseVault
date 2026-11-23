@@ -1,0 +1,25 @@
+-- Demo users for local development and tests.
+-- Run in MySQL: USE learning_portal; then execute this script.
+-- Login password for every account below: Demo@12345
+-- Wipes course-related rows first (FK-safe), then reloads demo users.
+
+DELETE FROM enrollments;
+DELETE FROM resource_tags;
+DELETE FROM resources;
+DELETE FROM submissions;
+DELETE FROM assignments;
+DELETE FROM notifications;
+DELETE FROM batches;
+DELETE FROM courses;
+
+DELETE FROM users
+WHERE username IN ('admin', 'teacher1', 'teacher2', 'student1', 'student2', 'inactive');
+
+INSERT INTO users (username, email, password_hash, role, first_name, last_name, is_active)
+VALUES
+    ('admin', 'admin@portal.local', '$2a$10$Vl6EL4/HYInYjh49iZFaE.zeLf1kjcpjtnL6L7vcmA/FU15S0MQ7.', 'ADMIN', 'System', 'Admin', 1),
+    ('teacher1', 'teacher1@portal.local', '$2a$10$Vl6EL4/HYInYjh49iZFaE.zeLf1kjcpjtnL6L7vcmA/FU15S0MQ7.', 'TEACHER', 'Asha', 'Rao', 1),
+    ('teacher2', 'teacher2@portal.local', '$2a$10$Vl6EL4/HYInYjh49iZFaE.zeLf1kjcpjtnL6L7vcmA/FU15S0MQ7.', 'TEACHER', 'Ravi', 'Menon', 1),
+    ('student1', 'student1@portal.local', '$2a$10$Vl6EL4/HYInYjh49iZFaE.zeLf1kjcpjtnL6L7vcmA/FU15S0MQ7.', 'STUDENT', 'Priya', 'Sharma', 1),
+    ('student2', 'student2@portal.local', '$2a$10$Vl6EL4/HYInYjh49iZFaE.zeLf1kjcpjtnL6L7vcmA/FU15S0MQ7.', 'STUDENT', 'Arjun', 'Patel', 1),
+    ('inactive', 'inactive@portal.local', '$2a$10$Vl6EL4/HYInYjh49iZFaE.zeLf1kjcpjtnL6L7vcmA/FU15S0MQ7.', 'STUDENT', 'Inactive', 'User', 0);

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profile · Setu · Nexus Institute of Technology</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <div class="backdrop" id="backdrop"></div>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="index.html">
+        <img class="brand-mark" src="assets/logo.svg" alt="" />
+        <span>
+          <div class="brand-name">Setu</div>
+          <div class="brand-sub">Nexus Institute</div>
+        </span>
+      </a>
+      <div class="role-pill">admin</div>
+      <nav class="nav">
+        <div class="nav-section">Menu</div>
+        <a class="nav-link" href="admin-dashboard.html"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+        <a class="nav-link" href="admin-dashboard.html#users"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="16" cy="9" r="2.5"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M14 19a4.5 4.5 0 0 1 6.5-4"/></svg>Users</a>
+        <a class="nav-link" href="admin-dashboard.html#courses"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg>Courses</a>
+        <a class="nav-link" href="admin-dashboard.html#batches"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/></svg>Batches</a>
+        <a class="nav-link" href="admin-dashboard.html#enrollments"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="3.5"/><path d="M19 8v6M16 11h6"/></svg>Enrollments</a>
+        <a class="nav-link is-active" href="profile-admin.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 19.2a7 7 0 0 1 14 0"/></svg>Profile</a>
+      </nav>
+      <a class="sidebar-user" href="profile-admin.html">
+        <div class="avatar">RD</div>
+        <div class="meta">
+          <div class="name">Rohan Deshpande</div>
+          <div class="id">System administrator</div>
+        </div>
+      </a>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <form class="search" action="#" onsubmit="return false">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+          <input type="search" placeholder="Search notes, lectures, or courses" aria-label="Search" />
+        </form>
+        <div class="topbar-actions">
+          <button class="icon-btn" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5"/><path d="M9.5 17a2.5 2.5 0 0 0 5 0"/></svg>
+            <span class="dot"></span>
+          </button>
+          <a class="chip" href="profile-admin.html">
+            <span class="avatar sm">RD</span>
+            <span class="chip-text">Admin · Nexus Institute</span>
+          </a>
+        </div>
+      </header>
+      <main class="content">
+
+        <div class="page-head">
+          <div>
+            <p class="page-kicker">Account</p>
+            <h1 class="page-title">Profile</h1>
+            <p class="page-lead">These details are stored on the User entity. Password changes go through <code>PUT /api/auth/password</code>.</p>
+          </div>
+        </div>
+        <div class="split">
+          <div class="card card-pad">
+            <div class="row" style="margin-bottom:24px">
+              <div class="avatar lg">RD</div>
+              <div>
+                <h2 class="card-title">Rohan Deshpande</h2>
+                <p class="course-meta">System administrator</p>
+                <span class="badge badge-primary" style="margin-top:8px">Admin</span>
+              </div>
+            </div>
+            <div class="form-grid">
+              
+              <div class="grid-2">
+                <div class="field"><label>First name</label><input class="input" value="Rohan" /></div>
+                <div class="field"><label>Last name</label><input class="input" value="Deshpande" /></div>
+              </div>
+              <div class="field"><label>Email</label><input class="input" value="admin@nexus.ac.in" /></div>
+              <div class="field"><label>Office</label><input class="input" value="IT Cell, Admin Block" /></div>
+
+              <div class="row" style="justify-content:flex-end">
+                <button class="btn btn-primary" type="button">Save changes</button>
+              </div>
+            </div>
+          </div>
+          <div class="card card-pad">
+            <h2 class="card-title" style="margin-bottom:16px">Change password</h2>
+            <div class="form-grid">
+              <div class="field"><label>Current password</label><input class="input" type="password" value="••••••••" /></div>
+              <div class="field"><label>New password</label><input class="input" type="password" /></div>
+              <div class="field"><label>Confirm new password</label><input class="input" type="password" /></div>
+              <button class="btn btn-ghost" type="button">Update password</button>
+            </div>
+            <p class="hint" style="margin-top:16px">After a password change, the current JWT stays valid until expiry (24 hours in the MVP).</p>
+            <a class="btn btn-danger-ghost" href="login.html" style="margin-top:24px">Sign out</a>
+          </div>
+        </div>
+    
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

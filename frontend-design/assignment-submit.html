@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Assignment 4 · Setu · Nexus Institute of Technology</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <div class="backdrop" id="backdrop"></div>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="index.html">
+        <img class="brand-mark" src="assets/logo.svg" alt="" />
+        <span>
+          <div class="brand-name">Setu</div>
+          <div class="brand-sub">Nexus Institute</div>
+        </span>
+      </a>
+      <div class="role-pill">student</div>
+      <nav class="nav">
+        <div class="nav-section">Menu</div>
+        <a class="nav-link" href="student-dashboard.html"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+        <a class="nav-link is-active" href="student-dashboard.html#courses"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg>My courses</a>
+        <a class="nav-link" href="student-dashboard.html#search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>Search</a>
+        <a class="nav-link" href="student-dashboard.html#notifications"><svg viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5"/><path d="M9.5 17a2.5 2.5 0 0 0 5 0"/></svg>Notifications<span class="nav-badge">3</span></a>
+        <a class="nav-link" href="profile.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 19.2a7 7 0 0 1 14 0"/></svg>Profile</a>
+      </nav>
+      <a class="sidebar-user" href="profile.html">
+        <div class="avatar">PS</div>
+        <div class="meta">
+          <div class="name">Priya Sharma</div>
+          <div class="id">21CSE084 · CSE 3rd year</div>
+        </div>
+      </a>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <form class="search" action="#" onsubmit="return false">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+          <input type="search" placeholder="Search notes, lectures, or courses" aria-label="Search" />
+        </form>
+        <div class="topbar-actions">
+          <button class="icon-btn" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5"/><path d="M9.5 17a2.5 2.5 0 0 0 5 0"/></svg>
+            <span class="dot"></span>
+          </button>
+          <a class="chip" href="profile.html">
+            <span class="avatar sm">PS</span>
+            <span class="chip-text">Nexus Institute · AY 2024–25</span>
+          </a>
+        </div>
+      </header>
+      <main class="content">
+
+        <p class="page-kicker"><a href="course-detail.html">CS301</a> · Assignment 4</p>
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">Implement Dijkstra</h1>
+            <p class="page-lead">Due 25 Nov 2026, 11:59 PM IST · 20 marks · One file, replaceable until the deadline</p>
+          </div>
+          <span class="badge badge-warning">Not submitted</span>
+        </div>
+        <div class="split">
+          <div class="stack">
+            <div class="card card-pad">
+              <h2 class="card-title" style="margin-bottom:12px">Brief</h2>
+              <p style="color:var(--color-text-secondary);font-size:0.95rem">Implement Dijkstra’s shortest-path algorithm for a weighted directed graph. Your program should read an adjacency list from a text file and print distances from a given source vertex. Include a short README describing time complexity and the test cases you ran.</p>
+              <div class="list" style="margin-top:16px">
+                <div class="list-item"><div class="file-icon">PDF</div><div style="flex:1"><div class="title">A4-brief.pdf</div><div class="sub">Attachment · Cloudinary raw · 420 KB</div></div><span class="badge">Open</span></div>
+              </div>
+            </div>
+            <div class="card card-pad">
+              <h2 class="card-title" style="margin-bottom:16px">Your submission</h2>
+              <div class="field" style="margin-bottom:16px">
+                <label>Upload a ZIP or PDF (max 100 MB)</label>
+                <div class="dropzone" id="dropzone" style="padding:28px 20px">
+                  <input type="file" id="file-input" hidden accept=".pdf,.zip,.java,.cpp" />
+                  <div class="idle">
+                    <div class="drop-icon"><svg viewBox="0 0 24 24"><path d="M12 16V7"/><path d="M8 11l4-4 4 4"/><path d="M5 19h14"/></svg></div>
+                    <h3>Drop your file here, or click to browse</h3>
+                    <p>The API will upload this to Cloudinary as <code>raw</code> and store public_id and secure_url.</p>
+                  </div>
+                  <div class="progress-wrap">
+                    <div class="progress-label"><span data-progress-label>Uploading to Cloudinary…</span><span data-progress-pct>0%</span></div>
+                    <div class="progress-bar"><div class="progress-fill"></div></div>
+                    <p class="cloud-tag" data-progress-file></p>
+                    <p class="cloud-tag" data-cloud-tag></p>
+                  </div>
+                </div>
+              </div>
+              <div class="field">
+                <label for="note">Note to instructor <span class="hint">(optional)</span></label>
+                <textarea class="textarea" id="note" rows="3" placeholder="Any comments for Prof. Iyer"></textarea>
+              </div>
+              <div class="row" style="margin-top:16px;justify-content:flex-end">
+                <a class="btn btn-ghost" href="course-detail.html">Back to course</a>
+                <button class="btn btn-primary" type="button">Submit assignment</button>
+              </div>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card card-pad">
+              <h2 class="card-title" style="margin-bottom:12px">Policy</h2>
+              <p style="font-size:14px;color:var(--color-text-secondary)">One submission per student. You may replace the file until the deadline. After 25 Nov 11:59 PM, new uploads are rejected.</p>
+            </div>
+            <div class="card card-pad">
+              <h2 class="card-title" style="margin-bottom:12px">Grade and feedback</h2>
+              <p style="font-size:14px;color:var(--color-text-muted)">No grade yet. After Prof. Iyer grades this, marks, feedback, and a notification will appear here.</p>
+            </div>
+            <div class="card card-pad">
+              <h2 class="card-title" style="margin-bottom:12px">Earlier work in this course</h2>
+              <div class="list">
+                <div class="list-item"><div style="flex:1"><div class="title">Assignment 3 – Heaps</div><div class="sub">16 / 20 · “Correct decrease-key.”</div></div><span class="badge badge-success">Graded</span></div>
+                <div class="list-item"><div style="flex:1"><div class="title">Assignment 2 – AVL</div><div class="sub">18 / 20</div></div><span class="badge badge-success">Graded</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

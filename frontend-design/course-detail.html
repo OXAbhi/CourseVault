@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CS301 · Course hub · Setu · Nexus Institute of Technology</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <div class="backdrop" id="backdrop"></div>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="index.html">
+        <img class="brand-mark" src="assets/logo.svg" alt="" />
+        <span>
+          <div class="brand-name">Setu</div>
+          <div class="brand-sub">Nexus Institute</div>
+        </span>
+      </a>
+      <div class="role-pill">student</div>
+      <nav class="nav">
+        <div class="nav-section">Menu</div>
+        <a class="nav-link" href="student-dashboard.html"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+        <a class="nav-link is-active" href="student-dashboard.html#courses"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg>My courses</a>
+        <a class="nav-link" href="student-dashboard.html#search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>Search</a>
+        <a class="nav-link" href="student-dashboard.html#notifications"><svg viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5"/><path d="M9.5 17a2.5 2.5 0 0 0 5 0"/></svg>Notifications<span class="nav-badge">3</span></a>
+        <a class="nav-link" href="profile.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 19.2a7 7 0 0 1 14 0"/></svg>Profile</a>
+      </nav>
+      <a class="sidebar-user" href="profile.html">
+        <div class="avatar">PS</div>
+        <div class="meta">
+          <div class="name">Priya Sharma</div>
+          <div class="id">21CSE084 · CSE 3rd year</div>
+        </div>
+      </a>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <form class="search" action="#" onsubmit="return false">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+          <input type="search" placeholder="Search notes, lectures, or courses" aria-label="Search" />
+        </form>
+        <div class="topbar-actions">
+          <button class="icon-btn" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5"/><path d="M9.5 17a2.5 2.5 0 0 0 5 0"/></svg>
+            <span class="dot"></span>
+          </button>
+          <a class="chip" href="profile.html">
+            <span class="avatar sm">PS</span>
+            <span class="chip-text">Nexus Institute · AY 2024–25</span>
+          </a>
+        </div>
+      </header>
+      <main class="content">
+
+        <div class="page-head">
+          <div>
+            <p class="page-kicker">CS301 · CSE 2024–25 Section A</p>
+            <h1 class="page-title">Data Structures and Algorithms</h1>
+            <p class="page-lead">Prof. Ananya Iyer · 12 notes · 8 recorded lectures · 4 assignments</p>
+          </div>
+          <a class="btn btn-primary" href="assignment-submit.html">Open Assignment 4</a>
+        </div>
+        <div data-tabset>
+          <div class="tabs" data-tabs>
+            <button class="tab" type="button" data-tab="notes">Notes</button>
+            <button class="tab is-active" type="button" data-tab="lectures">Lectures</button>
+            <button class="tab" type="button" data-tab="assignments">Assignments</button>
+          </div>
+          <div class="tab-panel" data-panel="notes">
+            <div class="card card-pad">
+              <div class="card-head"><h2 class="card-title">Notes</h2><span class="badge">PDF · raw on Cloudinary</span></div>
+              <div class="list">
+                <a class="list-item" href="#"><div class="file-icon">PDF</div><div style="flex:1"><div class="title">Unit 1 – Arrays, Stacks and Queues</div><div class="sub">Uploaded 12 Aug · 1.8 MB · public_id: nit-nagpur/cs301/unit-1-arrays</div></div><span class="badge">Open</span></a>
+                <a class="list-item" href="#"><div class="file-icon">PDF</div><div style="flex:1"><div class="title">Unit 2 – Linked Lists and Recursion</div><div class="sub">Uploaded 2 Sep · 2.1 MB</div></div><span class="badge">Open</span></a>
+                <a class="list-item" href="#"><div class="file-icon">PDF</div><div style="flex:1"><div class="title">Unit 3 – AVL Trees and Heaps</div><div class="sub">Yesterday · 2.4 MB</div></div><span class="badge badge-primary">New</span></a>
+                <a class="list-item" href="#"><div class="file-icon ppt">PPTX</div><div style="flex:1"><div class="title">Tutorial sheet – Hashing</div><div class="sub">4 Nov · 890 KB</div></div><span class="badge">Open</span></a>
+              </div>
+            </div>
+          </div>
+          <div class="tab-panel is-active" data-panel="lectures">
+            <div class="split">
+              <div class="stack">
+                <div class="player" aria-label="Lecture video player">
+                  <div class="player-stage">
+                    <button class="play-btn" type="button" aria-label="Play lecture"><svg viewBox="0 0 24 24"><polygon points="8,5 20,12 8,19"/></svg></button>
+                  </div>
+                  <div class="player-bar">
+                    <div class="track"><span></span></div>
+                    <div class="meta"><span>16:20 / 42:08</span><span>Cloudinary video · HD</span></div>
+                  </div>
+                </div>
+                <div>
+                  <h2 class="card-title">Lecture 12 – Graph Traversals</h2>
+                  <p class="page-lead">BFS, DFS, and when to use each. Recorded 18 Nov 2026 in LH-3. Playback uses the Cloudinary secure video URL after the API checks your enrollment.</p>
+                </div>
+                <div class="card card-pad">
+                  <div class="card-head"><h3 class="card-title">Notes in this unit</h3></div>
+                  <div class="list">
+                    <a class="list-item" href="#"><div class="file-icon">PDF</div><div style="flex:1"><div class="title">Unit 3 – AVL Trees and Heaps</div><div class="sub">2.4 MB · PDF</div></div></a>
+                    <a class="list-item" href="#"><div class="file-icon">PDF</div><div style="flex:1"><div class="title">Graph theory quick reference</div><div class="sub">640 KB · PDF</div></div></a>
+                  </div>
+                </div>
+              </div>
+              <div class="card card-pad playlist">
+                <div class="card-head"><h3 class="card-title">All lectures</h3></div>
+                <div class="list-item is-current"><div class="file-icon mp4">12</div><div style="flex:1"><div class="title">Graph Traversals</div><div class="sub">42 min · 18 Nov</div></div></div>
+                <div class="list-item"><div class="file-icon mp4">11</div><div style="flex:1"><div class="title">Binary Heaps</div><div class="sub">38 min · 11 Nov</div></div></div>
+                <div class="list-item"><div class="file-icon mp4">10</div><div style="flex:1"><div class="title">AVL Rotations</div><div class="sub">45 min · 4 Nov</div></div></div>
+                <div class="list-item"><div class="file-icon mp4">09</div><div style="flex:1"><div class="title">BST Operations</div><div class="sub">36 min · 28 Oct</div></div></div>
+                <div class="list-item"><div class="file-icon mp4">08</div><div style="flex:1"><div class="title">Hashing and Collision</div><div class="sub">41 min · 14 Oct</div></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-panel" data-panel="assignments">
+            <div class="card card-pad">
+              <div class="list">
+                <a class="list-item" href="assignment-submit.html"><div class="file-icon ppt">A4</div><div style="flex:1"><div class="title">Assignment 4 – Implement Dijkstra</div><div class="sub">Due 25 Nov 2026, 11:59 PM · 20 marks · Not submitted</div></div><span class="badge badge-warning">Due soon</span></a>
+                <a class="list-item" href="assignment-submit.html"><div class="file-icon ppt">A3</div><div style="flex:1"><div class="title">Assignment 3 – Heap implementation</div><div class="sub">Submitted 8 Nov · Graded 16 / 20</div></div><span class="badge badge-success">Graded</span></a>
+                <a class="list-item" href="assignment-submit.html"><div class="file-icon ppt">A2</div><div style="flex:1"><div class="title">Assignment 2 – Balanced trees</div><div class="sub">Submitted 12 Oct · Graded 18 / 20</div></div><span class="badge badge-success">Graded</span></a>
+                <a class="list-item" href="assignment-submit.html"><div class="file-icon ppt">A1</div><div style="flex:1"><div class="title">Assignment 1 – Linked list ADT</div><div class="sub">Submitted 5 Sep · Graded 19 / 20</div></div><span class="badge badge-success">Graded</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

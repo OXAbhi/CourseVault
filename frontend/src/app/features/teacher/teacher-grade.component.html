@@ -1,0 +1,57 @@
+@if (assignment) {
+  <div class="page-head">
+    <div>
+      <p class="page-kicker">Grading</p>
+      <h1 class="page-title">{{ assignment.title }}</h1>
+      <p class="page-lead">Max marks: {{ assignment.maxMarks }}</p>
+    </div>
+  </div>
+}
+@if (message) {
+  <div class="setu-alert setu-alert-success">{{ message }}</div>
+}
+
+<div class="split">
+  <div class="card card-pad">
+    <h2 class="card-title" style="margin-bottom: 12px">Submissions</h2>
+    @if (submissions.length === 0) {
+      <p class="page-lead">No submissions yet.</p>
+    } @else {
+      <div class="list">
+        @for (s of submissions; track s.id) {
+          <button
+            type="button"
+            class="list-item"
+            [class.active]="selectedId === s.id"
+            (click)="select(s)"
+          >
+            <div class="avatar sm">{{ s.studentUsername.charAt(0).toUpperCase() }}</div>
+            <div style="flex: 1; text-align: left">
+              <div class="title">{{ s.studentUsername }}</div>
+              <div class="sub">{{ formatInstant(s.submittedAt) }}</div>
+            </div>
+            <span class="badge">{{ s.status }}</span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+  <div class="card card-pad">
+    <h2 class="card-title" style="margin-bottom: 12px">Grade</h2>
+    @if (selectedId) {
+      <form class="form-grid" [formGroup]="gradeForm" (ngSubmit)="submitGrade()">
+        <div class="field">
+          <label for="marks">Marks</label>
+          <input id="marks" class="input marks-input" type="number" formControlName="marks" />
+        </div>
+        <div class="field">
+          <label for="feedback">Feedback</label>
+          <textarea id="feedback" class="textarea" rows="3" formControlName="feedback"></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Post grade</button>
+      </form>
+    } @else {
+      <p class="page-lead">Select a submission to grade.</p>
+    }
+  </div>
+</div>

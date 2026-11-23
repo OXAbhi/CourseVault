@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student dashboard · Setu · Nexus Institute of Technology</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <div class="backdrop" id="backdrop"></div>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="index.html">
+        <img class="brand-mark" src="assets/logo.svg" alt="" />
+        <span>
+          <div class="brand-name">Setu</div>
+          <div class="brand-sub">Nexus Institute</div>
+        </span>
+      </a>
+      <div class="role-pill">student</div>
+      <nav class="nav">
+        <div class="nav-section">Menu</div>
+        <a class="nav-link is-active" href="student-dashboard.html"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+        <a class="nav-link" href="student-dashboard.html#courses"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg>My courses</a>
+        <a class="nav-link" href="student-dashboard.html#search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>Search</a>
+        <a class="nav-link" href="student-dashboard.html#notifications"><svg viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5"/><path d="M9.5 17a2.5 2.5 0 0 0 5 0"/></svg>Notifications<span class="nav-badge">3</span></a>
+        <a class="nav-link" href="profile.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 19.2a7 7 0 0 1 14 0"/></svg>Profile</a>
+      </nav>
+      <a class="sidebar-user" href="profile.html">
+        <div class="avatar">PS</div>
+        <div class="meta">
+          <div class="name">Priya Sharma</div>
+          <div class="id">21CSE084 · CSE 3rd year</div>
+        </div>
+      </a>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <form class="search" action="#" onsubmit="return false">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+          <input type="search" placeholder="Search notes, lectures, or courses" aria-label="Search" />
+        </form>
+        <div class="topbar-actions">
+          <button class="icon-btn" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5"/><path d="M9.5 17a2.5 2.5 0 0 0 5 0"/></svg>
+            <span class="dot"></span>
+          </button>
+          <a class="chip" href="profile.html">
+            <span class="avatar sm">PS</span>
+            <span class="chip-text">Nexus Institute · AY 2024–25</span>
+          </a>
+        </div>
+      </header>
+      <main class="content">
+
+        <div class="page-head">
+          <div>
+            <p class="page-kicker">Good afternoon, Priya</p>
+            <h1 class="page-title">Your courses this semester</h1>
+            <p class="page-lead">CSE 2024–25 Section A · 4 enrolled courses · 2 assignments due this week</p>
+          </div>
+        </div>
+        <div class="grid-4" style="margin-bottom: 24px">
+          <div class="card stat"><div class="label">Enrolled courses</div><div class="value">4</div><div class="delta">All in Section A</div></div>
+          <div class="card stat"><div class="label">New uploads</div><div class="value">7</div><div class="delta">Since Monday</div></div>
+          <div class="card stat"><div class="label">Due this week</div><div class="value">2</div><div class="delta is-warn">Assignment 4 due 25 Nov</div></div>
+          <div class="card stat"><div class="label">Unread alerts</div><div class="value">3</div><div class="delta">1 new grade posted</div></div>
+        </div>
+
+        <div class="card card-pad" style="margin-bottom:24px">
+          <div class="card-head"><h2 class="card-title">Recent uploads</h2><span class="badge">Section A only</span></div>
+          <div class="list">
+            <a class="list-item" href="course-detail.html"><div class="file-icon">PDF</div><div style="flex:1"><div class="title">Unit 3 – AVL Trees and Heaps</div><div class="sub">CS301 · Prof. Iyer · Yesterday · 2.4 MB</div></div><span class="badge badge-primary">Note</span></a>
+            <a class="list-item" href="course-detail.html"><div class="file-icon mp4">MP4</div><div style="flex:1"><div class="title">Lecture 12 – Graph Traversals</div><div class="sub">CS301 · Recorded 18 Nov · 42 min</div></div><span class="badge badge-primary">Lecture</span></a>
+            <a class="list-item" href="assignment-submit.html"><div class="file-icon ppt">ASG</div><div style="flex:1"><div class="title">Assignment 4 – Implement Dijkstra</div><div class="sub">CS301 · Due 25 Nov 2026, 11:59 PM</div></div><span class="badge badge-warning">Due 25 Nov</span></a>
+          </div>
+        </div>
+
+        <div class="split">
+          <div class="stack">
+            <div id="courses">
+              <div class="card-head">
+                <h2 class="card-title">Enrolled courses</h2>
+                <a href="course-detail.html" class="btn btn-ghost btn-sm">View all</a>
+              </div>
+              <div class="grid-2">
+                <a class="card course-card" href="course-detail.html">
+                  <span class="course-code">CS301</span>
+                  <h3>Data Structures and Algorithms</h3>
+                  <p class="course-meta">Prof. Ananya Iyer · 12 notes · 8 lectures</p>
+                  <div class="course-foot"><span>Assignment 4 due in 4 days</span><span class="badge badge-warning">Due soon</span></div>
+                </a>
+                <a class="card course-card" href="course-detail.html">
+                  <span class="course-code">CS302</span>
+                  <h3>Database Management Systems</h3>
+                  <p class="course-meta">Dr. Rahul Mehta · 9 notes · 6 lectures</p>
+                  <div class="course-foot"><span>Last upload: ER modelling notes</span><span class="badge badge-success">Up to date</span></div>
+                </a>
+                <a class="card course-card" href="course-detail.html">
+                  <span class="course-code">CS303</span>
+                  <h3>Operating Systems</h3>
+                  <p class="course-meta">Prof. Sneha Kulkarni · 10 notes · 7 lectures</p>
+                  <div class="course-foot"><span>Process scheduling lecture added</span><span class="badge badge-primary">2 new</span></div>
+                </a>
+                <a class="card course-card" href="course-detail.html">
+                  <span class="course-code">CS304</span>
+                  <h3>Computer Networks</h3>
+                  <p class="course-meta">Dr. Vikram Rao · 8 notes · 5 lectures</p>
+                  <div class="course-foot"><span>Mid-term notes published</span><span class="badge">On track</span></div>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card card-pad" id="notifications">
+              <div class="card-head"><h2 class="card-title">Upcoming deadlines</h2></div>
+              <div class="deadline"><div class="cal"><div class="mo">NOV</div><div class="da">25</div></div><div><div class="title" style="font-weight:600;font-size:14px">Implement Dijkstra</div><div class="sub" style="font-size:12px;color:var(--color-text-muted);margin-top:2px">CS301 · Assignment 4 · 20 marks</div></div></div>
+              <div class="deadline"><div class="cal"><div class="mo">NOV</div><div class="da">28</div></div><div><div class="title" style="font-weight:600;font-size:14px">SQL query sheet</div><div class="sub" style="font-size:12px;color:var(--color-text-muted);margin-top:2px">CS302 · Assignment 3 · 15 marks</div></div></div>
+              <a class="btn btn-soft btn-block" href="assignment-submit.html" style="margin-top:12px">Open Assignment 4</a>
+            </div>
+            <div class="card card-pad">
+              <div class="card-head"><h2 class="card-title">Notifications</h2></div>
+              <div class="list">
+                <div class="list-item"><div class="avatar sm">AI</div><div><div class="title">New lecture in CS301</div><div class="sub">Graph Traversals was published · 2h ago</div></div></div>
+                <div class="list-item"><div class="avatar sm">AI</div><div><div class="title">Assignment 4 created</div><div class="sub">Implement Dijkstra · due 25 Nov</div></div></div>
+                <div class="list-item"><div class="avatar sm">RM</div><div><div class="title">Grade posted · CS302 A2</div><div class="sub">18 / 20 · “Clear normalisation steps.”</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

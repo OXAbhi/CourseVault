@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UI prototype · Setu · Nexus Institute of Technology</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <div class="gallery">
+    <div class="gallery-hero">
+      <a class="brand" href="index.html" style="padding:0;border:0;margin-bottom:24px">
+        <img class="brand-mark" src="assets/logo.svg" alt="" />
+        <span>
+          <div class="brand-name">Setu</div>
+          <div class="brand-sub">Nexus Institute of Technology, Nagpur</div>
+        </span>
+      </a>
+      <p class="page-kicker">UI prototype · college CSE project</p>
+      <h1>Front-end design for the Online Learning Portal</h1>
+      <p class="page-lead">A clickable, static HTML preview of the Angular SPA. Light theme, calm indigo, sidebar plus top bar. Sample data is from a fictional Nexus Institute of Technology in Nagpur. Open any screen, or start from sign-in and switch roles.</p>
+      <div class="row" style="margin-top:20px">
+        <a class="btn btn-primary" href="login.html">Open sign in</a>
+        <a class="btn btn-ghost" href="DESIGN.md">Read DESIGN.md</a>
+      </div>
+    </div>
+    <h2 class="card-title" style="margin-bottom:16px">Screens</h2>
+    <div class="screen-grid" style="margin-bottom:40px">
+      <a class="card screen-card" href="login.html"><div class="role">Public</div><h3>Sign in / Register</h3><p class="course-meta">Role select and demo access for Student, Teacher, and Admin.</p></a>
+      <a class="card screen-card" href="student-dashboard.html"><div class="role">Student</div><h3>Student dashboard</h3><p class="course-meta">Enrolled courses, recent uploads, deadlines, notifications.</p></a>
+      <a class="card screen-card" href="course-detail.html"><div class="role">Student</div><h3>Course hub</h3><p class="course-meta">Tabs for Notes, Lectures (video player), and Assignments.</p></a>
+      <a class="card screen-card" href="assignment-submit.html"><div class="role">Student</div><h3>Assignment submit</h3><p class="course-meta">Brief, Cloudinary upload, policy, and grade area.</p></a>
+      <a class="card screen-card" href="teacher-dashboard.html"><div class="role">Teacher</div><h3>Teacher dashboard</h3><p class="course-meta">My courses, upload stats, pending grades.</p></a>
+      <a class="card screen-card" href="teacher-upload.html"><div class="role">Teacher</div><h3>Upload material</h3><p class="course-meta">Title, type, drop zone, Cloudinary progress.</p></a>
+      <a class="card screen-card" href="teacher-submissions.html"><div class="role">Teacher</div><h3>Grade submissions</h3><p class="course-meta">Class list, marks, feedback, save grade.</p></a>
+      <a class="card screen-card" href="admin-dashboard.html"><div class="role">Admin</div><h3>Admin dashboard</h3><p class="course-meta">Users, approve teachers, courses, batches, enrollments.</p></a>
+      <a class="card screen-card" href="profile.html"><div class="role">Shared</div><h3>Profile</h3><p class="course-meta">Account details and password change (student view).</p></a>
+    </div>
+    <h2 class="card-title" style="margin-bottom:12px">Colour tokens</h2>
+    <p class="page-lead" style="margin-bottom:16px">Defined as CSS variables in <code>css/styles.css</code>. Reproduce these in the Angular styles.</p>
+    <div class="swatches">
+      <div class="swatch"><i style="background:#3b54d1"></i><b>Primary</b><span>#3B54D1</span></div>
+      <div class="swatch"><i style="background:#eef1fb"></i><b>Primary soft</b><span>#EEF1FB</span></div>
+      <div class="swatch"><i style="background:#f3f5fa"></i><b>Background</b><span>#F3F5FA</span></div>
+      <div class="swatch"><i style="background:#1a1f2e"></i><b>Text</b><span>#1A1F2E</span></div>
+      <div class="swatch"><i style="background:#5c6578"></i><b>Secondary</b><span>#5C6578</span></div>
+      <div class="swatch"><i style="background:#0f8a62"></i><b>Success</b><span>#0F8A62</span></div>
+      <div class="swatch"><i style="background:#b57600"></i><b>Warning</b><span>#B57600</span></div>
+      <div class="swatch"><i style="background:#c53d3d"></i><b>Danger</b><span>#C53D3D</span></div>
+    </div>
+  </div>
+</body>
+</html>

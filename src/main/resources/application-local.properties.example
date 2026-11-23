@@ -1,0 +1,8 @@
+# Copy to application-local.properties for local development (gitignored).
+# Or export the same keys as environment variables instead.
+
+# DB_PASSWORD=your_mysql_password
+# CLOUDINARY_CLOUD_NAME=your_cloud
+# CLOUDINARY_API_KEY=your_key
+# CLOUDINARY_API_SECRET=your_secret
+# JWT_SECRET=use-a-long-random-secret-at-least-32-characters

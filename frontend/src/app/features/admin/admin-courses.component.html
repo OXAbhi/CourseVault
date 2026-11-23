@@ -1,0 +1,56 @@
+<div class="page-head">
+  <div>
+    <p class="page-kicker">Catalog</p>
+    <h1 class="page-title">Courses</h1>
+  </div>
+</div>
+<div class="split">
+  <div class="card" style="overflow: hidden">
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Title</th>
+            <th>Teacher</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of courses; track c.id) {
+            <tr>
+              <td>{{ c.code }}</td>
+              <td>{{ c.title }}</td>
+              <td>{{ c.teacherUsername }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card card-pad">
+    <h2 class="card-title" style="margin-bottom: 12px">New course</h2>
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="create()">
+      <div class="field">
+        <label for="code">Code</label>
+        <input id="code" class="input" formControlName="code" />
+      </div>
+      <div class="field">
+        <label for="title">Title</label>
+        <input id="title" class="input" formControlName="title" />
+      </div>
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea id="description" class="textarea" rows="2" formControlName="description"></textarea>
+      </div>
+      <div class="field">
+        <label for="teacherId">Teacher</label>
+        <select id="teacherId" class="select" formControlName="teacherId">
+          @for (t of teachers; track t.id) {
+            <option [value]="t.id">{{ t.username }}</option>
+          }
+        </select>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Create course</button>
+    </form>
+  </div>
+</div>

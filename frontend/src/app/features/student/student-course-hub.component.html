@@ -1,0 +1,89 @@
+@if (course) {
+  <div class="page-head">
+    <div>
+      <p class="page-kicker">{{ course.code }}</p>
+      <h1 class="page-title">{{ course.title }}</h1>
+      <p class="page-lead">{{ course.teacherName }} · {{ course.description || 'Course hub' }}</p>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab" type="button" [class.is-active]="activeTab === 'notes'" (click)="setTab('notes')">Notes</button>
+    <button class="tab" type="button" [class.is-active]="activeTab === 'lectures'" (click)="setTab('lectures')">Lectures</button>
+    <button class="tab" type="button" [class.is-active]="activeTab === 'assignments'" (click)="setTab('assignments')">
+      Assignments
+    </button>
+  </div>
+
+  @if (activeTab === 'notes') {
+    <div class="card card-pad">
+      <div class="card-head">
+        <h2 class="card-title">Notes & files</h2>
+      </div>
+      @if (notesResources().length === 0) {
+        <p class="page-lead">No notes published yet.</p>
+      } @else {
+        <div class="list">
+          @for (r of notesResources(); track r.id) {
+            <a class="list-item" [routerLink]="['/student/resources', r.id]">
+              <div class="file-icon">{{ fileIcon(r) }}</div>
+              <div style="flex: 1">
+                <div class="title">{{ r.title }}</div>
+                <div class="sub">{{ r.resourceType }} · {{ formatInstant(r.createdAt) }}</div>
+              </div>
+              <span class="badge">Open</span>
+            </a>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @if (activeTab === 'lectures') {
+    <div class="card card-pad">
+      <div class="card-head">
+        <h2 class="card-title">Recorded lectures</h2>
+      </div>
+      @if (lectureResources().length === 0) {
+        <p class="page-lead">No lectures published yet.</p>
+      } @else {
+        <div class="list">
+          @for (r of lectureResources(); track r.id) {
+            <a class="list-item" [routerLink]="['/student/resources', r.id]">
+              <div class="file-icon mp4">MP4</div>
+              <div style="flex: 1">
+                <div class="title">{{ r.title }}</div>
+                <div class="sub">{{ formatInstant(r.createdAt) }}</div>
+              </div>
+              <span class="badge badge-primary">Watch</span>
+            </a>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @if (activeTab === 'assignments') {
+    <div class="card card-pad">
+      <div class="card-head">
+        <h2 class="card-title">Assignments</h2>
+      </div>
+      @if (assignments.length === 0) {
+        <p class="page-lead">No assignments yet.</p>
+      } @else {
+        <div class="list">
+          @for (a of assignments; track a.id) {
+            <a class="list-item" [routerLink]="['/student/assignments', a.id]">
+              <div class="file-icon ppt">ASG</div>
+              <div style="flex: 1">
+                <div class="title">{{ a.title }}</div>
+                <div class="sub">Due {{ formatInstant(a.dueAt) }} · {{ a.maxMarks }} marks</div>
+              </div>
+              <span class="badge">Open</span>
+            </a>
+          }
+        </div>
+      }
+    </div>
+  }
+}
