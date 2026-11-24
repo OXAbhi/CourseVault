@@ -1,7 +1,3 @@
--- Demo users for local development and tests.
--- Run in MySQL: USE learning_portal; then execute this script.
--- Login password for every account below: Demo@12345
--- Wipes course-related rows first (FK-safe), then reloads demo users.
 
 DELETE FROM enrollments;
 DELETE FROM resource_tags;
