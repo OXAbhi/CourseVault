@@ -23,6 +23,9 @@ import { Quiz, QuizAttempt } from '../../models/quiz.models';
           <p class="page-lead">{{ quiz.questionCount }} questions · pick one answer each.</p>
         </div>
       </div>
+      @if (quiz.studentCanRetake) {
+        <div class="setu-alert setu-alert-success">Your teacher allowed a retake. Submit new answers below.</div>
+      }
       @if (error) {
         <div class="setu-alert setu-alert-danger">{{ error }}</div>
       }
@@ -107,14 +110,30 @@ export class StudentQuizComponent implements OnInit {
     const quizId = Number(this.route.snapshot.paramMap.get('id'));
     this.quizApi.get(quizId).subscribe({
       next: (q) => {
-        this.quiz = q;
         this.courseId = q.courseId;
+        if (q.studentHasAttempt && !q.studentCanRetake) {
+          this.loadLatestResult(quizId);
+          return;
+        }
+        this.quiz = q;
         for (const question of q.questions) {
           this.answersForm.addControl(String(question.id), this.fb.control<number | null>(null));
         }
       },
       error: (err: HttpErrorResponse) => {
         this.error = extractApiMessage(err) ?? 'Quiz is not available.';
+      },
+    });
+  }
+
+  private loadLatestResult(quizId: number): void {
+    this.quizApi.getLatestAttempt(quizId).subscribe({
+      next: (attempt) => {
+        this.result = attempt;
+        this.quiz = null;
+      },
+      error: (err: HttpErrorResponse) => {
+        this.error = extractApiMessage(err) ?? 'Could not load your quiz result.';
       },
     });
   }

@@ -323,6 +323,7 @@
                   <th style="text-align: left">Student</th>
                   <th style="text-align: left">Score</th>
                   <th style="text-align: left">Submitted</th>
+                  <th style="text-align: left">Retake</th>
                 </tr>
               </thead>
               <tbody>
@@ -331,6 +332,20 @@
                     <td>{{ a.studentDisplayName }}</td>
                     <td>{{ a.score }} / {{ a.totalQuestions }}</td>
                     <td>{{ formatInstant(a.submittedAt) }}</td>
+                    <td>
+                      @if (a.retakePending) {
+                        <span class="badge badge-success">Allowed</span>
+                      } @else {
+                        <button
+                          type="button"
+                          class="btn btn-soft btn-sm"
+                          [disabled]="retakeGrantingId === a.studentId"
+                          (click)="grantRetake(a)"
+                        >
+                          {{ retakeGrantingId === a.studentId ? '…' : 'Allow retake' }}
+                        </button>
+                      }
+                    </td>
                   </tr>
                 }
               </tbody>

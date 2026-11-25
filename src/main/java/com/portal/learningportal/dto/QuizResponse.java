@@ -21,8 +21,14 @@ public class QuizResponse {
     private final String createdByUsername;
     private final int questionCount;
     private final List<QuizQuestionResponse> questions;
+  private final Boolean studentHasAttempt;
+    private final Boolean studentCanRetake;
 
     public static QuizResponse from(Quiz quiz, boolean includeAnswers) {
+        return from(quiz, includeAnswers, null, null);
+    }
+
+    public static QuizResponse from(Quiz quiz, boolean includeAnswers, Boolean studentHasAttempt, Boolean studentCanRetake) {
         List<QuizQuestionResponse> questions = quiz.getQuestions() == null
                 ? List.of()
                 : quiz.getQuestions().stream()
@@ -39,6 +45,8 @@ public class QuizResponse {
                 .createdByUsername(quiz.getCreatedBy().getUsername())
                 .questionCount(questions.size())
                 .questions(questions)
+                .studentHasAttempt(studentHasAttempt)
+                .studentCanRetake(studentCanRetake)
                 .build();
     }
 

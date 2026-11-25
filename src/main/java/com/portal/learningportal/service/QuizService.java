@@ -12,6 +12,7 @@ import com.portal.learningportal.entity.QuizAttemptAnswer;
 import com.portal.learningportal.entity.Course;
 import com.portal.learningportal.entity.Quiz;
 import com.portal.learningportal.entity.QuizQuestion;
+import com.portal.learningportal.entity.QuizRetakeGrant;
 import com.portal.learningportal.entity.Resource;
 import com.portal.learningportal.entity.Role;
 import com.portal.learningportal.entity.User;
@@ -21,14 +22,19 @@ import com.portal.learningportal.exception.ResourceNotFoundException;
 import com.portal.learningportal.repository.QuizAttemptRepository;
 import com.portal.learningportal.repository.QuizQuestionRepository;
 import com.portal.learningportal.repository.QuizRepository;
+import com.portal.learningportal.repository.QuizRetakeGrantRepository;
 import com.portal.learningportal.repository.ResourceRepository;
+import com.portal.learningportal.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class QuizService {
@@ -43,6 +49,8 @@ public class QuizService {
     private final OpenAiService openAiService;
     private final QuizJsonParser quizJsonParser;
     private final NotificationService notificationService;
+    private final QuizRetakeGrantRepository quizRetakeGrantRepository;
+    private final UserRepository userRepository;
 
     public QuizService(
             QuizRepository quizRepository,
@@ -54,7 +62,9 @@ public class QuizService {
             PdfTextExtractorService pdfTextExtractorService,
             OpenAiService openAiService,
             QuizJsonParser quizJsonParser,
-            NotificationService notificationService
+            NotificationService notificationService,
+            QuizRetakeGrantRepository quizRetakeGrantRepository,
+            UserRepository userRepository
     ) {
         this.quizRepository = quizRepository;
         this.quizAttemptRepository = quizAttemptRepository;
@@ -66,6 +76,8 @@ public class QuizService {
         this.openAiService = openAiService;
         this.quizJsonParser = quizJsonParser;
         this.notificationService = notificationService;
+        this.quizRetakeGrantRepository = quizRetakeGrantRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional(readOnly = true)
@@ -86,6 +98,15 @@ public class QuizService {
         boolean includeAnswers = user.getRole() == Role.TEACHER || user.getRole() == Role.ADMIN;
         if (user.getRole() == Role.STUDENT && !Boolean.TRUE.equals(quiz.getIsPublished())) {
             throw new ForbiddenException("Quiz is not published yet.");
+        }
+        if (user.getRole() == Role.STUDENT) {
+            boolean hasAttempt = quizAttemptRepository
+                    .findFirstByQuizIdAndStudentIdOrderBySubmittedAtDesc(quizId, user.getId())
+                    .isPresent();
+            boolean canRetake = quizRetakeGrantRepository.findByQuizIdAndStudentId(quizId, user.getId())
+                    .map(g -> !Boolean.TRUE.equals(g.getConsumed()))
+                    .orElse(false);
+            return QuizResponse.from(quiz, false, hasAttempt, canRetake);
         }
         return QuizResponse.from(quiz, includeAnswers);
     }
@@ -233,9 +254,48 @@ public class QuizService {
         Quiz quiz = requireQuiz(quizId);
         courseAccessService.requireManageableCourse(user, quiz.getCourse().getId());
         assertTeacherOwnsCourse(user, quiz.getCourse());
-        return quizAttemptRepository.findByQuizIdWithStudent(quizId).stream()
-                .map(QuizAttemptSummaryResponse::from)
+        List<QuizAttempt> attempts = quizAttemptRepository.findByQuizIdWithStudent(quizId);
+        List<Long> studentIds = attempts.stream()
+                .map(a -> a.getStudent().getId())
+                .distinct()
                 .toList();
+        Set<Long> pendingRetakeStudentIds = studentIds.isEmpty()
+                ? Set.of()
+                : quizRetakeGrantRepository.findByQuizIdAndStudentIdInAndConsumedFalse(quizId, studentIds).stream()
+                        .map(g -> g.getStudent().getId())
+                        .collect(Collectors.toCollection(HashSet::new));
+        return attempts.stream()
+                .map(a -> QuizAttemptSummaryResponse.from(
+                        a, pendingRetakeStudentIds.contains(a.getStudent().getId())))
+                .toList();
+    }
+
+    @Transactional
+    public void grantRetake(Long quizId, Long studentId) {
+        User user = currentUserService.requireAnyRole(Role.TEACHER, Role.ADMIN);
+        Quiz quiz = requireQuiz(quizId);
+        courseAccessService.requireManageableCourse(user, quiz.getCourse().getId());
+        assertTeacherOwnsCourse(user, quiz.getCourse());
+        User student = userRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+        if (student.getRole() != Role.STUDENT) {
+            throw new BadRequestException("Retake can only be granted to a student.");
+        }
+        boolean hasAttempt = quizAttemptRepository
+                .findFirstByQuizIdAndStudentIdOrderBySubmittedAtDesc(quizId, studentId)
+                .isPresent();
+        if (!hasAttempt) {
+            throw new BadRequestException("This student has not submitted the quiz yet.");
+        }
+        QuizRetakeGrant grant = quizRetakeGrantRepository.findByQuizIdAndStudentId(quizId, studentId)
+                .orElseGet(() -> QuizRetakeGrant.builder()
+                        .quiz(quiz)
+                        .student(student)
+                        .build());
+        grant.setGrantedBy(user);
+        grant.setGrantedAt(java.time.Instant.now());
+        grant.setConsumed(false);
+        quizRetakeGrantRepository.save(grant);
     }
 
     private static void renumberSortOrder(Quiz quiz) {
@@ -276,6 +336,17 @@ public class QuizService {
         if (request.answers().size() != questions.size()) {
             throw new BadRequestException("Answer every question before submitting.");
         }
+        var existingAttempt = quizAttemptRepository.findFirstByQuizIdAndStudentIdOrderBySubmittedAtDesc(quizId, user.getId());
+        var pendingGrant = quizRetakeGrantRepository.findByQuizIdAndStudentId(quizId, user.getId())
+                .filter(g -> !Boolean.TRUE.equals(g.getConsumed()));
+        if (existingAttempt.isPresent()) {
+            if (pendingGrant.isEmpty()) {
+                throw new BadRequestException("You already submitted this quiz. Ask your teacher for a retake.");
+            }
+            quizAttemptRepository.delete(existingAttempt.get());
+            pendingGrant.get().setConsumed(true);
+            quizRetakeGrantRepository.save(pendingGrant.get());
+        }
         QuizAttempt attempt = QuizAttempt.builder()
                 .quiz(quiz)
                 .student(user)
@@ -302,8 +373,9 @@ public class QuizService {
         }
         attempt.setScore(score);
         quizAttemptRepository.save(attempt);
-        return QuizAttemptResponse.from(
-                quizAttemptRepository.findByIdWithAnswers(attempt.getId()).orElseThrow());
+        QuizAttempt saved = quizAttemptRepository.findByIdWithAnswers(attempt.getId()).orElseThrow();
+        notificationService.notifyTeacherQuizAttempt(quiz, user, saved);
+        return QuizAttemptResponse.from(saved);
     }
 
     @Transactional(readOnly = true)

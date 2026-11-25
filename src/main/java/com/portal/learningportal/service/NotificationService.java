@@ -3,6 +3,7 @@ package com.portal.learningportal.service;
 import com.portal.learningportal.dto.NotificationResponse;
 import com.portal.learningportal.entity.Assignment;
 import com.portal.learningportal.entity.Quiz;
+import com.portal.learningportal.entity.QuizAttempt;
 import com.portal.learningportal.entity.EnrollmentStatus;
 import com.portal.learningportal.entity.Notification;
 import com.portal.learningportal.entity.Resource;
@@ -68,6 +69,29 @@ public class NotificationService {
     }
 
     @Transactional
+    public void notifyTeacherQuizAttempt(Quiz quiz, User student, QuizAttempt attempt) {
+        User teacher = quiz.getCourse().getTeacher();
+        if (teacher == null) {
+            return;
+        }
+        String display = studentDisplayName(student);
+        String title = "Quiz submitted";
+        String body = "%s — %s scored %d/%d on %s".formatted(
+                quiz.getCourse().getCode(),
+                display,
+                attempt.getScore(),
+                attempt.getTotalQuestions(),
+                quiz.getTitle());
+        String link = "/teacher/courses/" + quiz.getCourse().getId();
+        notificationRepository.save(Notification.builder()
+                .user(teacher)
+                .title(title)
+                .body(body)
+                .link(link)
+                .build());
+    }
+
+    @Transactional
     public void notifySubmissionGraded(Submission submission) {
         Assignment assignment = submission.getAssignment();
         String title = "Grade posted";
@@ -103,6 +127,14 @@ public class NotificationService {
         }
         notification.setIsRead(true);
         return NotificationResponse.from(notificationRepository.save(notification));
+    }
+
+    private static String studentDisplayName(User student) {
+        String display = "%s %s".formatted(
+                student.getFirstName() != null ? student.getFirstName() : "",
+                student.getLastName() != null ? student.getLastName() : ""
+        ).trim();
+        return display.isBlank() ? student.getUsername() : display;
     }
 
     private void notifyActiveEnrolledStudents(Long courseId, String title, String body, String link) {

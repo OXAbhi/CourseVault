@@ -76,6 +76,12 @@ export class NotificationsPageComponent implements OnInit {
         return [`${prefix}/quizzes`, id];
       }
     }
+    if (link.startsWith('/teacher/courses/')) {
+      const id = link.replace('/teacher/courses/', '').split('?')[0];
+      if (role === 'TEACHER') {
+        return [`${prefix}/courses`, id];
+      }
+    }
     return null;
   }
 }

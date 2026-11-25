@@ -81,6 +81,7 @@ export class TeacherCourseHubComponent implements OnInit {
   questionSavingId: number | null = null;
   questionDeletingId: number | null = null;
   quizDeleting = false;
+  retakeGrantingId: number | null = null;
 
   quizError: string | null = null;
   quizMsg: string | null = null;
@@ -480,6 +481,25 @@ export class TeacherCourseHubComponent implements OnInit {
 
   optionLabel(index: number): string {
     return String.fromCharCode(65 + index);
+  }
+
+  grantRetake(attempt: QuizAttemptSummary): void {
+    if (!this.quizPreview || this.retakeGrantingId != null) {
+      return;
+    }
+    this.quizError = null;
+    this.retakeGrantingId = attempt.studentId;
+    this.quizApi.grantRetake(this.quizPreview.id, attempt.studentId).subscribe({
+      next: () => {
+        this.retakeGrantingId = null;
+        this.quizMsg = `Retake allowed for ${attempt.studentDisplayName}.`;
+        this.loadAttempts(this.quizPreview!.id);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.retakeGrantingId = null;
+        this.quizError = extractApiMessage(err) ?? 'Could not allow retake.';
+      },
+    });
   }
 
   createAssignment(): void {

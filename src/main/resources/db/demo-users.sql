@@ -1,5 +1,6 @@
 
 DELETE FROM enrollments;
+DELETE FROM quiz_retake_grants;
 DELETE FROM quiz_attempt_answers;
 DELETE FROM quiz_attempts;
 DELETE FROM quiz_questions;

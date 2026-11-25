@@ -95,4 +95,14 @@ public class QuizController {
     public ResponseEntity<QuizAttemptResponse> latestAttempt(@PathVariable Long id) {
         return ResponseEntity.ok(quizService.getMyLatestAttempt(id));
     }
+
+    @PostMapping("/{quizId}/retakes/{studentId}")
+    @PreAuthorize("hasAnyRole('TEACHER','ADMIN')")
+    public ResponseEntity<Void> grantRetake(
+            @PathVariable Long quizId,
+            @PathVariable Long studentId
+    ) {
+        quizService.grantRetake(quizId, studentId);
+        return ResponseEntity.noContent().build();
+    }
 }

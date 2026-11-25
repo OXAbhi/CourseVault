@@ -51,6 +51,10 @@ export class QuizApiService {
     return this.http.get<QuizAttemptSummary[]>(`${this.api}/api/quizzes/${quizId}/attempts`);
   }
 
+  grantRetake(quizId: number, studentId: number): Observable<void> {
+    return this.http.post<void>(`${this.api}/api/quizzes/${quizId}/retakes/${studentId}`, {});
+  }
+
   submitAttempt(
     quizId: number,
     answers: { questionId: number; selectedIndex: number }[]

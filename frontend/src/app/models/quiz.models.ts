@@ -18,6 +18,8 @@ export interface Quiz {
   createdByUsername: string;
   questionCount: number;
   questions: QuizQuestion[];
+  studentHasAttempt?: boolean;
+  studentCanRetake?: boolean;
 }
 
 export interface QuizGenerateRequest {
@@ -36,8 +38,10 @@ export interface QuizQuestionUpdateRequest {
 
 export interface QuizAttemptSummary {
   attemptId: number;
+  studentId: number;
   studentUsername: string;
   studentDisplayName: string;
+  retakePending: boolean;
   score: number;
   totalQuestions: number;
   submittedAt: string;
