@@ -1,5 +1,9 @@
 
 DELETE FROM enrollments;
+DELETE FROM quiz_attempt_answers;
+DELETE FROM quiz_attempts;
+DELETE FROM quiz_questions;
+DELETE FROM quizzes;
 DELETE FROM resource_tags;
 DELETE FROM resources;
 DELETE FROM submissions;

@@ -12,6 +12,12 @@
 @if (uploadMsg) {
   <div class="setu-alert setu-alert-success">{{ uploadMsg }}</div>
 }
+@if (quizMsg) {
+  <div class="setu-alert setu-alert-success">{{ quizMsg }}</div>
+}
+@if (quizError) {
+  <div class="setu-alert setu-alert-danger">{{ quizError }}</div>
+}
 
 <div class="split">
   <div class="stack">
@@ -32,11 +38,23 @@
                 <div class="title">{{ r.title }}</div>
                 <div class="sub">{{ r.resourceType }} · {{ formatInstant(r.createdAt) }}</div>
               </div>
-              @if (r.published) {
-                <span class="badge badge-success">Published</span>
-              } @else {
-                <span class="badge badge-warning">Draft</span>
-              }
+              <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap">
+                @if (r.published) {
+                  <span class="badge badge-success">Published</span>
+                } @else {
+                  <span class="badge badge-warning">Draft</span>
+                }
+                @if (canGenerateQuiz(r)) {
+                  <button
+                    class="btn btn-soft btn-sm"
+                    type="button"
+                    [disabled]="quizGeneratingId === r.id"
+                    (click)="generateQuiz(r)"
+                  >
+                    {{ quizGeneratingId === r.id ? 'Generating…' : 'Generate quiz' }}
+                  </button>
+                }
+              </div>
             </div>
           }
         </div>
@@ -77,6 +95,28 @@
           {{ assigning ? 'Creating…' : 'Create assignment' }}
         </button>
       </form>
+    </div>
+    <div class="card card-pad">
+      <h2 class="card-title" style="margin-bottom: 12px">AI quizzes</h2>
+      @if (quizzes.length === 0) {
+        <p class="field hint">Generate a quiz from a PDF note using the button on each material.</p>
+      } @else {
+        <div class="list">
+          @for (q of quizzes; track q.id) {
+            <button class="list-item" type="button" style="width: 100%; text-align: left; border: none; background: transparent; cursor: pointer" (click)="openQuiz(q.id)">
+              <div style="flex: 1">
+                <div class="title">{{ q.title }}</div>
+                <div class="sub">{{ q.questionCount }} questions · {{ q.sourceResourceTitle }}</div>
+              </div>
+              @if (q.published) {
+                <span class="badge badge-success">Published</span>
+              } @else {
+                <span class="badge badge-warning">Draft</span>
+              }
+            </button>
+          }
+        </div>
+      }
     </div>
     <div class="card card-pad">
       <h2 class="card-title" style="margin-bottom: 12px">Assignments</h2>
@@ -187,6 +227,41 @@
           <button class="btn btn-primary" type="submit" [disabled]="uploading">Upload</button>
         </div>
       </form>
+    </div>
+  </div>
+}
+
+@if (quizModalOpen && quizPreview) {
+  <div class="backdrop is-on" (click)="closeQuizModal()"></div>
+  <div class="setu-dialog" role="dialog" aria-modal="true" aria-labelledby="quizTitle">
+    <div class="card card-pad" style="max-height: 85vh; overflow: auto" (click)="$event.stopPropagation()">
+      <h2 id="quizTitle" class="card-title">{{ quizPreview.title }}</h2>
+      <p class="field hint">From {{ quizPreview.sourceResourceTitle }} · review before publishing.</p>
+      <div class="stack" style="gap: 16px; margin: 16px 0">
+        @for (q of quizPreview.questions; track q.id; let qi = $index) {
+          <div class="card card-pad" style="background: var(--surface-1, #f8fafc)">
+            <p style="font-weight: 600; margin: 0 0 8px">Q{{ qi + 1 }}. {{ q.questionText }}</p>
+            <ul style="margin: 0; padding-left: 20px">
+              @for (opt of q.options; track opt; let oi = $index) {
+                <li [style.font-weight]="oi === q.correctIndex ? '600' : 'normal'">
+                  {{ optionLabel(oi) }}. {{ opt }}
+                  @if (oi === q.correctIndex) {
+                    <span class="badge badge-primary" style="margin-left: 6px">Answer</span>
+                  }
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+      <div class="row" style="justify-content: flex-end; gap: 8px">
+        <button type="button" class="btn btn-ghost" (click)="closeQuizModal()">Close</button>
+        @if (quizPreview.published) {
+          <button type="button" class="btn btn-soft" (click)="publishQuiz(false)">Unpublish</button>
+        } @else {
+          <button type="button" class="btn btn-primary" (click)="publishQuiz(true)">Publish quiz</button>
+        }
+      </div>
     </div>
   </div>
 }

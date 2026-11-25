@@ -6,7 +6,9 @@ import { CourseApiService } from '../../services/course-api.service';
 import { ResourceApiService } from '../../services/resource-api.service';
 import { AssignmentApiService } from '../../services/assignment-api.service';
 import { BatchApiService } from '../../services/batch-api.service';
+import { QuizApiService } from '../../services/quiz-api.service';
 import { Assignment, Batch, Course, ResourceItem, ResourceType } from '../../models/portal.models';
+import { Quiz } from '../../models/quiz.models';
 import { datetimeLocalToIso, formatInstant } from '../../shared/utils/date.util';
 
 @Component({
@@ -22,6 +24,7 @@ export class TeacherCourseHubComponent implements OnInit {
   private readonly resourceApi = inject(ResourceApiService);
   private readonly assignmentApi = inject(AssignmentApiService);
   private readonly batchApi = inject(BatchApiService);
+  private readonly quizApi = inject(QuizApiService);
 
   @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
 
@@ -42,6 +45,13 @@ export class TeacherCourseHubComponent implements OnInit {
   assignMsg: string | null = null;
   assignError: string | null = null;
   assigning = false;
+
+  quizzes: Quiz[] = [];
+  quizPreview: Quiz | null = null;
+  quizModalOpen = false;
+  quizGeneratingId: number | null = null;
+  quizError: string | null = null;
+  quizMsg: string | null = null;
 
   readonly formatInstant = formatInstant;
 
@@ -76,6 +86,13 @@ export class TeacherCourseHubComponent implements OnInit {
     this.reloadResources();
     this.assignmentApi.listForCourse(this.courseId).subscribe({ next: (a) => (this.assignments = a) });
     this.batchApi.listForCourse(this.courseId).subscribe({ next: (b) => (this.batches = b) });
+    this.reloadQuizzes();
+  }
+
+  reloadQuizzes(): void {
+    this.quizApi.listForCourse(this.courseId).subscribe({
+      next: (q) => (this.quizzes = q),
+    });
   }
 
   reloadResources(): void {
@@ -182,6 +199,70 @@ export class TeacherCourseHubComponent implements OnInit {
             extractApiMessage(err) ?? 'Upload failed. Check file type (PDF, PPT, MP4) and API logs.';
         },
       });
+  }
+
+  canGenerateQuiz(resource: ResourceItem): boolean {
+    return resource.resourceType !== 'LECTURE';
+  }
+
+  generateQuiz(resource: ResourceItem): void {
+    if (this.quizGeneratingId != null) {
+      return;
+    }
+    this.quizError = null;
+    this.quizMsg = null;
+    this.quizGeneratingId = resource.id;
+    this.quizApi.generateFromResource(resource.id, 5).subscribe({
+      next: (quiz) => {
+        this.quizGeneratingId = null;
+        this.quizMsg = `Generated ${quiz.questionCount} questions from “${resource.title}”.`;
+        this.quizPreview = quiz;
+        this.quizModalOpen = true;
+        this.reloadQuizzes();
+      },
+      error: (err: HttpErrorResponse) => {
+        this.quizGeneratingId = null;
+        this.quizError = extractApiMessage(err) ?? 'Quiz generation failed.';
+      },
+    });
+  }
+
+  openQuiz(quizId: number): void {
+    this.quizError = null;
+    this.quizApi.get(quizId).subscribe({
+      next: (q) => {
+        this.quizPreview = q;
+        this.quizModalOpen = true;
+      },
+      error: (err: HttpErrorResponse) => {
+        this.quizError = extractApiMessage(err) ?? 'Could not load quiz.';
+      },
+    });
+  }
+
+  closeQuizModal(): void {
+    this.quizModalOpen = false;
+    this.quizPreview = null;
+  }
+
+  publishQuiz(published: boolean): void {
+    if (!this.quizPreview) {
+      return;
+    }
+    this.quizApi.publish(this.quizPreview.id, published).subscribe({
+      next: (q) => {
+        this.quizPreview = q;
+        this.reloadQuizzes();
+        this.quizMsg = published ? 'Quiz published — students see it under Quizzes in the course hub.' : 'Quiz unpublished.';
+      },
+      error: (err: HttpErrorResponse) => {
+        this.quizError = extractApiMessage(err) ?? 'Could not update quiz.';
+      },
+    });
+  }
+
+  optionLabel(index: number): string {
+    return String.fromCharCode(65 + index);
   }
 
   createAssignment(): void {

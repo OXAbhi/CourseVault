@@ -17,6 +17,7 @@ import { StudentCourseHubComponent } from './features/student/student-course-hub
 import { StudentResourceViewComponent } from './features/student/student-resource-view.component';
 import { StudentAssignmentDetailComponent } from './features/student/student-assignment-detail.component';
 import { StudentSearchPageComponent } from './features/student/search-page.component';
+import { StudentQuizComponent } from './features/student/student-quiz.component';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -34,6 +35,7 @@ export const routes: Routes = [
           { path: 'dashboard', component: StudentDashboardComponent },
           { path: 'courses', component: StudentCoursesComponent },
           { path: 'courses/:id', component: StudentCourseHubComponent },
+          { path: 'quizzes/:id', component: StudentQuizComponent },
           { path: 'resources/:id', component: StudentResourceViewComponent },
           { path: 'assignments/:id', component: StudentAssignmentDetailComponent },
           { path: 'search', component: StudentSearchPageComponent },

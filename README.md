@@ -24,6 +24,7 @@ Role-based learning portal (Spring Boot API + Angular). Teachers upload material
    - `DB_PASSWORD`, optional `DB_USERNAME`, `DB_URL`
    - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
    - `JWT_SECRET` (at least 32 characters)
+   - `openai.api-key` (optional, for AI quiz — `sk-...` in `application-local.properties` only)
 
 2. **API:** `mvn spring-boot:run` → [http://localhost:8080](http://localhost:8080)
 
@@ -45,6 +46,13 @@ Cloudinary must allow delivery for your files (unsigned delivery or signed URLs)
 ```bash
 mvn test
 ```
+
+## OpenAI (local smoke test)
+
+1. Set `openai.api-key=sk-...` in `application-local.properties` (gitignored).
+2. Run the API and log in as `teacher1` / `Demo@12345`.
+3. **In the app:** log in as `teacher1`, open **AI setup** in the sidebar (or dashboard card) → `/teacher/ai` → **Run connection test**.
+4. **Optional Postman:** `GET/POST http://localhost:8080/api/ai/status|test` with `Authorization: Bearer <token>`.
 
 ## License
 

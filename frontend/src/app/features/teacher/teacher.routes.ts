@@ -7,6 +7,7 @@ import { TeacherCoursesComponent } from './teacher-courses.component';
 import { TeacherCourseHubComponent } from './teacher-course-hub.component';
 import { TeacherGradeComponent } from './teacher-grade.component';
 import { TeacherRosterComponent } from './teacher-roster.component';
+import { TeacherAiComponent } from './teacher-ai.component';
 
 export const TEACHER_ROUTES: Routes = [
   {
@@ -19,6 +20,7 @@ export const TEACHER_ROUTES: Routes = [
       { path: 'courses/:id', component: TeacherCourseHubComponent },
       { path: 'courses/:id/roster/:batchId', component: TeacherRosterComponent },
       { path: 'assignments/:id/grade', component: TeacherGradeComponent },
+      { path: 'ai', component: TeacherAiComponent },
       { path: 'notifications', component: NotificationsPageComponent },
       { path: 'profile', component: ProfilePageComponent },
     ],

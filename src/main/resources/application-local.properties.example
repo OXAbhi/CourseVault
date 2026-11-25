@@ -6,3 +6,13 @@
 # CLOUDINARY_API_KEY=your_key
 # CLOUDINARY_API_SECRET=your_secret
 # JWT_SECRET=use-a-long-random-secret-at-least-32-characters
+# OpenRouter (Qwen, etc.): key must start with sk-or-v1- from https://openrouter.ai/keys
+# openai.base-url=https://openrouter.ai/api/v1
+# openai.api-key=sk-or-v1-...
+# openai.model=qwen/qwen-plus
+# other solid OpenRouter options: meta-llama/llama-3.1-8b-instruct, openai/gpt-4o-mini
+#
+# Plain OpenAI: base-url https://api.openai.com/v1 and openai.api-key=sk-...
+#
+# If OPENAI_API_KEY, OPENAI_MODEL, or OPENAI_BASE_URL is set in Windows or your IDE run config,
+# those OVERRIDE this file — remove them or set them to the same values, then restart the API.

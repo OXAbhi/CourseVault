@@ -13,6 +13,9 @@
     <button class="tab" type="button" [class.is-active]="activeTab === 'assignments'" (click)="setTab('assignments')">
       Assignments
     </button>
+    <button class="tab" type="button" [class.is-active]="activeTab === 'quizzes'" (click)="setTab('quizzes')">
+      Quizzes
+    </button>
   </div>
 
   @if (activeTab === 'notes') {
@@ -56,6 +59,30 @@
                 <div class="sub">{{ formatInstant(r.createdAt) }}</div>
               </div>
               <span class="badge badge-primary">Watch</span>
+            </a>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @if (activeTab === 'quizzes') {
+    <div class="card card-pad">
+      <div class="card-head">
+        <h2 class="card-title">Practice quizzes</h2>
+      </div>
+      @if (quizzes.length === 0) {
+        <p class="page-lead">No published quizzes yet. Your teacher publishes them after generating from course notes.</p>
+      } @else {
+        <div class="list">
+          @for (q of quizzes; track q.id) {
+            <a class="list-item" [routerLink]="['/student/quizzes', q.id]">
+              <div class="file-icon ppt">Quiz</div>
+              <div style="flex: 1">
+                <div class="title">{{ q.title }}</div>
+                <div class="sub">{{ q.questionCount }} questions · from {{ q.sourceResourceTitle }}</div>
+              </div>
+              <span class="badge badge-primary">Start</span>
             </a>
           }
         </div>

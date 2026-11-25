@@ -52,6 +52,7 @@ export class ShellComponent implements OnInit {
       return [
         { label: 'Dashboard', path: '/teacher/dashboard' },
         { label: 'My courses', path: '/teacher/courses' },
+        { label: 'AI setup', path: '/teacher/ai' },
         { label: 'Notifications', path: '/teacher/notifications' },
         { label: 'Profile', path: '/teacher/profile' },
       ];
