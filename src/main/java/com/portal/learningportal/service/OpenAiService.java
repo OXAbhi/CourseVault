@@ -1,6 +1,8 @@
 package com.portal.learningportal.service;
 
 import com.portal.learningportal.config.OpenAiProperties;
+import com.portal.learningportal.dto.QuizGenerateRequest;
+import com.portal.learningportal.exception.AiBusyException;
 import com.portal.learningportal.exception.BadRequestException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -29,30 +31,47 @@ public class OpenAiService {
         return normalizeBaseUrl(properties.getBaseUrl());
     }
 
-    /** Safe hint so teachers can see if a stale OPENAI_API_KEY env var overwrote application-local. */
-    public String getKeyPrefix() {
-        String key = properties.getApiKey();
-        if (key == null || key.isBlank()) {
-            return "";
-        }
-        key = key.trim();
-        int end = Math.min(12, key.length());
-        return key.substring(0, end) + (key.length() > end ? "…" : "");
-    }
-
-    /**
-     * Minimal chat call to verify API key and connectivity (local / pre-quiz testing).
-     */
     /**
      * Ask the model to return strict JSON for multiple-choice questions based on study material.
      */
-    public String generateQuizJson(String sourceTitle, String pdfText, int questionCount) {
+    public String generateQuizJson(QuizGenerateRequest request, String sourceTitle, String pdfText) {
         if (!properties.isConfigured()) {
             throw new BadRequestException("AI API key is not configured.");
         }
         if (pdfText == null || pdfText.isBlank()) {
             throw new BadRequestException("No text to generate a quiz from.");
         }
+        int count = request.resolvedCount();
+        String teacherInstructions = request.instructionsOrEmpty();
+        String difficulty = request.resolvedDifficulty();
+        String systemPrompt = """
+                You create university-level multiple-choice quizzes.
+                Rules (never break these):
+                - Use ONLY the source text provided by the user.
+                - Test concepts, code, and application from the body of the material.
+                - Never ask about headings, chapter numbers, table of contents, page numbers, or how to use the document.
+                - Produce exactly %d questions, each with exactly 4 distinct options and one correct answer (correctIndex 0-3).
+                - Option strings must NOT start with A. B. C. or D. prefixes.
+                - Do not duplicate questions.
+                - Difficulty level: %s.
+                - If the teacher gives extra instructions, follow them only when they do not conflict with these rules.
+                - Return ONLY a JSON array: [{"question":"...","options":["...","...","...","..."],"correctIndex":0,"explanation":"..."}]
+                """.formatted(count, difficulty);
+        String userPrompt = """
+                Material title: %s
+                %s
+
+                --- BEGIN SOURCE TEXT ---
+                %s
+                --- END SOURCE TEXT ---
+                """.formatted(
+                sourceTitle,
+                teacherInstructions.isBlank() ? "" : "Teacher focus: " + teacherInstructions,
+                pdfText);
+        return chatCompletion(systemPrompt, userPrompt, 8192, 0.3);
+    }
+
+    private String chatCompletion(String systemPrompt, String userPrompt, int maxTokens, double temperature) {
         String baseUrl = normalizeBaseUrl(properties.getBaseUrl());
         RestClient.Builder builder = RestClient.builder()
                 .baseUrl(baseUrl)
@@ -63,28 +82,22 @@ public class OpenAiService {
                     .defaultHeader("X-Title", "CourseVault");
         }
         RestClient client = builder.build();
-        String userPrompt = """
-                Create exactly %d multiple-choice questions from the study material below.
-                Output ONLY valid JSON (no markdown) in this shape:
-                {"questions":[{"text":"...","options":["A","B","C","D"],"correctIndex":0}]}
-                correctIndex is 0-3 matching options order. Base questions only on the material.
-                Material title: %s
-
-                --- BEGIN MATERIAL ---
-                %s
-                --- END MATERIAL ---
-                """.formatted(questionCount, sourceTitle, pdfText);
         String body = """
                 {
                   "model": "%s",
                   "messages": [
-                    {"role": "system", "content": "You write exam questions for university courses. Return only JSON."},
+                    {"role": "system", "content": "%s"},
                     {"role": "user", "content": "%s"}
                   ],
-                  "max_tokens": 4096,
-                  "temperature": 0.3
+                  "max_tokens": %d,
+                  "temperature": %s
                 }
-                """.formatted(escapeJson(properties.getModel()), escapeJson(userPrompt));
+                """.formatted(
+                escapeJson(properties.getModel()),
+                escapeJson(systemPrompt),
+                escapeJson(userPrompt),
+                maxTokens,
+                temperature);
         try {
             String response = client.post()
                     .uri("/chat/completions")
@@ -93,9 +106,12 @@ public class OpenAiService {
                     .body(String.class);
             return extractAssistantReply(response);
         } catch (RestClientResponseException ex) {
+            if (ex.getStatusCode().value() == 429) {
+                throw new AiBusyException("AI is busy, try again in a minute");
+            }
             throw new BadRequestException("AI request failed (" + ex.getStatusCode().value() + "): "
                     + truncate(ex.getResponseBodyAsString(), 400));
-        } catch (BadRequestException ex) {
+        } catch (AiBusyException | BadRequestException ex) {
             throw ex;
         } catch (Exception ex) {
             throw new BadRequestException("AI request failed: " + ex.getMessage());
@@ -116,30 +132,11 @@ public class OpenAiService {
             builder.defaultHeader("HTTP-Referer", "http://localhost:4200")
                     .defaultHeader("X-Title", "CourseVault");
         }
-        RestClient client = builder.build();
-        String body = """
-                {
-                  "model": "%s",
-                  "messages": [
-                    {"role": "system", "content": "You help teachers on an education platform. Follow instructions exactly."},
-                    {"role": "user", "content": "Say hello in one word, nothing else."}
-                  ],
-                  "max_tokens": 64
-                }
-                """.formatted(escapeJson(properties.getModel()));
-        try {
-            String response = client.post()
-                    .uri("/chat/completions")
-                    .body(body)
-                    .retrieve()
-                    .body(String.class);
-            return extractAssistantReply(response);
-        } catch (RestClientResponseException ex) {
-            throw new BadRequestException("OpenAI request failed (" + ex.getStatusCode().value() + "): "
-                    + truncate(ex.getResponseBodyAsString(), 300));
-        } catch (Exception ex) {
-            throw new BadRequestException("OpenAI request failed: " + ex.getMessage());
-        }
+        return chatCompletion(
+                "You help teachers on an education platform. Follow instructions exactly.",
+                "Say hello in one word, nothing else.",
+                64,
+                0.3);
     }
 
     private static String normalizeBaseUrl(String baseUrl) {

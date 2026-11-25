@@ -6,7 +6,10 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 @Component
 public class QuizJsonParser {
@@ -17,49 +20,83 @@ public class QuizJsonParser {
         this.objectMapper = objectMapper;
     }
 
-    public record ParsedQuestion(String text, List<String> options, int correctIndex) {
+    public record ParsedQuestion(String text, List<String> options, int correctIndex, String explanation) {
     }
 
-    public List<ParsedQuestion> parseModelJson(String raw) {
+    public List<ParsedQuestion> parseModelJson(String raw, int expectedCount) {
         String json = stripCodeFence(raw);
         try {
             JsonNode root = objectMapper.readTree(json);
-            JsonNode questions = root.get("questions");
+            JsonNode questions = root.isArray() ? root : root.get("questions");
             if (questions == null || !questions.isArray() || questions.isEmpty()) {
                 throw new BadRequestException("AI returned no quiz questions. Try again or use another model.");
             }
             List<ParsedQuestion> result = new ArrayList<>();
+            Set<String> seenQuestions = new HashSet<>();
             for (JsonNode node : questions) {
-                String text = text(node, "text", "question");
-                JsonNode optionsNode = node.get("options");
-                if (optionsNode == null || !optionsNode.isArray() || optionsNode.size() < 2) {
+                ParsedQuestion parsed = parseQuestionNode(node);
+                if (parsed == null) {
                     continue;
                 }
-                List<String> options = new ArrayList<>();
-                optionsNode.forEach(o -> options.add(o.asText().trim()));
-                while (options.size() < 4) {
-                    options.add("Option " + (char) ('A' + options.size()));
+                String key = parsed.text().toLowerCase(Locale.ROOT);
+                if (seenQuestions.contains(key)) {
+                    continue;
                 }
-                List<String> fourOptions = options.size() > 4 ? options.subList(0, 4) : List.copyOf(options);
-                int correctIndex = node.has("correctIndex")
-                        ? node.get("correctIndex").asInt()
-                        : letterToIndex(node.path("correct").asText(""));
-                if (correctIndex < 0 || correctIndex > 3) {
-                    correctIndex = 0;
-                }
-                if (!text.isBlank()) {
-                    result.add(new ParsedQuestion(text, fourOptions, correctIndex));
-                }
+                seenQuestions.add(key);
+                result.add(parsed);
             }
             if (result.isEmpty()) {
                 throw new BadRequestException("Could not parse quiz questions from AI response.");
             }
-            return result;
+            if (result.size() < expectedCount) {
+                throw new BadRequestException("AI returned fewer questions than requested (" + result.size()
+                        + " of " + expectedCount + ").");
+            }
+            return result.subList(0, Math.min(result.size(), expectedCount));
         } catch (BadRequestException ex) {
             throw ex;
         } catch (Exception ex) {
             throw new BadRequestException("Invalid quiz JSON from AI: " + ex.getMessage());
         }
+    }
+
+    private ParsedQuestion parseQuestionNode(JsonNode node) {
+        String text = text(node, "question", "text");
+        if (text.isBlank()) {
+            return null;
+        }
+        JsonNode optionsNode = node.get("options");
+        if (optionsNode == null || !optionsNode.isArray() || optionsNode.size() < 4) {
+            return null;
+        }
+        List<String> options = new ArrayList<>();
+        for (JsonNode o : optionsNode) {
+            options.add(normalizeOption(o.asText()));
+        }
+        if (options.size() > 4) {
+            options = options.subList(0, 4);
+        }
+        while (options.size() < 4) {
+            options.add("Option " + (char) ('A' + options.size()));
+        }
+        int correctIndex = node.has("correctIndex")
+                ? node.get("correctIndex").asInt()
+                : letterToIndex(node.path("correct").asText(""));
+        if (correctIndex < 0 || correctIndex > 3) {
+            correctIndex = 0;
+        }
+        String explanation = node.has("explanation") && !node.get("explanation").isNull()
+                ? node.get("explanation").asText().trim()
+                : null;
+        return new ParsedQuestion(text, List.copyOf(options), correctIndex, explanation);
+    }
+
+    public static String normalizeOption(String option) {
+        if (option == null) {
+            return "";
+        }
+        String trimmed = option.trim();
+        return trimmed.replaceFirst("^[A-Da-d][.)]\\s*", "").trim();
     }
 
     private static String text(JsonNode node, String... keys) {
@@ -93,6 +130,11 @@ public class QuizJsonParser {
             if (end > 0) {
                 trimmed = trimmed.substring(0, end);
             }
+        }
+        int arrayStart = trimmed.indexOf('[');
+        int arrayEnd = trimmed.lastIndexOf(']');
+        if (arrayStart >= 0 && arrayEnd > arrayStart) {
+            return trimmed.substring(arrayStart, arrayEnd + 1);
         }
         int start = trimmed.indexOf('{');
         int end = trimmed.lastIndexOf('}');

@@ -2,6 +2,7 @@ package com.portal.learningportal.service;
 
 import com.portal.learningportal.dto.NotificationResponse;
 import com.portal.learningportal.entity.Assignment;
+import com.portal.learningportal.entity.Quiz;
 import com.portal.learningportal.entity.EnrollmentStatus;
 import com.portal.learningportal.entity.Notification;
 import com.portal.learningportal.entity.Resource;
@@ -53,6 +54,17 @@ public class NotificationService {
                 assignment.getDueAt());
         String link = "/assignments/" + assignment.getId();
         notifyActiveEnrolledStudents(assignment.getCourse().getId(), title, body, link);
+    }
+
+    @Transactional
+    public void notifyQuizPublished(Quiz quiz) {
+        if (!Boolean.TRUE.equals(quiz.getIsPublished())) {
+            return;
+        }
+        String title = "New practice quiz";
+        String body = "%s — %s".formatted(quiz.getCourse().getCode(), quiz.getTitle());
+        String link = "/student/quizzes/" + quiz.getId();
+        notifyActiveEnrolledStudents(quiz.getCourse().getId(), title, body, link);
     }
 
     @Transactional

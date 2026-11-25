@@ -11,6 +11,7 @@ import { AdminUsersComponent } from './features/admin/admin-users.component';
 import { AdminCoursesComponent } from './features/admin/admin-courses.component';
 import { AdminBatchesComponent } from './features/admin/admin-batches.component';
 import { AdminEnrollmentsComponent } from './features/admin/admin-enrollments.component';
+import { TeacherAiComponent } from './features/teacher/teacher-ai.component';
 import { StudentDashboardComponent } from './features/student/student-dashboard.component';
 import { StudentCoursesComponent } from './features/student/student-courses.component';
 import { StudentCourseHubComponent } from './features/student/student-course-hub.component';
@@ -67,6 +68,7 @@ export const routes: Routes = [
           { path: 'courses', component: AdminCoursesComponent },
           { path: 'batches', component: AdminBatchesComponent },
           { path: 'enrollments', component: AdminEnrollmentsComponent },
+          { path: 'ai', component: TeacherAiComponent },
           { path: 'profile', component: ProfilePageComponent },
         ],
       },

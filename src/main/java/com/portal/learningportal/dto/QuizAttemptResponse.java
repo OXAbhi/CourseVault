@@ -2,6 +2,7 @@ package com.portal.learningportal.dto;
 
 import com.portal.learningportal.entity.QuizAttempt;
 import com.portal.learningportal.entity.QuizAttemptAnswer;
+import com.portal.learningportal.service.QuizJsonParser;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -42,7 +43,11 @@ public class QuizAttemptResponse {
         return QuizAttemptResultItem.builder()
                 .questionId(q.getId())
                 .questionText(q.getQuestionText())
-                .options(List.of(q.getOptionA(), q.getOptionB(), q.getOptionC(), q.getOptionD()))
+                .options(List.of(
+                        QuizJsonParser.normalizeOption(q.getOptionA()),
+                        QuizJsonParser.normalizeOption(q.getOptionB()),
+                        QuizJsonParser.normalizeOption(q.getOptionC()),
+                        QuizJsonParser.normalizeOption(q.getOptionD())))
                 .selectedIndex(answer.getSelectedIndex())
                 .correctIndex(q.getCorrectIndex())
                 .correct(answer.isCorrect())

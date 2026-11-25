@@ -22,19 +22,18 @@ public class OpenAiController {
 
     /** Whether a key is loaded (does not expose the key). */
     @GetMapping("/status")
-    @PreAuthorize("hasAnyRole('TEACHER','ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<OpenAiStatusResponse> status() {
         return ResponseEntity.ok(new OpenAiStatusResponse(
                 openAiService.isConfigured(),
                 openAiService.getModel(),
-                openAiService.getBaseUrl(),
-                openAiService.getKeyPrefix()
+                openAiService.getBaseUrl()
         ));
     }
 
     /** Calls OpenAI once with a tiny prompt — use after pasting key in application-local.properties. */
     @PostMapping("/test")
-    @PreAuthorize("hasAnyRole('TEACHER','ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<OpenAiTestResponse> test() {
         String reply = openAiService.testConnection();
         return ResponseEntity.ok(new OpenAiTestResponse(true, openAiService.getModel(), reply));

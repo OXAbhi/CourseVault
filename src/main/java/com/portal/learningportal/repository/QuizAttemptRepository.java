@@ -33,4 +33,12 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> 
     );
 
     Optional<QuizAttempt> findFirstByQuizIdAndStudentIdOrderBySubmittedAtDesc(Long quizId, Long studentId);
+
+    @Query("""
+            SELECT a FROM QuizAttempt a
+            JOIN FETCH a.student
+            WHERE a.quiz.id = :quizId
+            ORDER BY a.submittedAt DESC
+            """)
+    List<QuizAttempt> findByQuizIdWithStudent(@Param("quizId") Long quizId);
 }

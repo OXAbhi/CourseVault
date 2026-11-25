@@ -52,7 +52,6 @@ export class ShellComponent implements OnInit {
       return [
         { label: 'Dashboard', path: '/teacher/dashboard' },
         { label: 'My courses', path: '/teacher/courses' },
-        { label: 'AI setup', path: '/teacher/ai' },
         { label: 'Notifications', path: '/teacher/notifications' },
         { label: 'Profile', path: '/teacher/profile' },
       ];
@@ -64,6 +63,7 @@ export class ShellComponent implements OnInit {
         { label: 'Courses', path: '/admin/courses' },
         { label: 'Batches', path: '/admin/batches' },
         { label: 'Enrollments', path: '/admin/enrollments' },
+        { label: 'AI setup', path: '/admin/ai' },
         { label: 'Profile', path: '/admin/profile' },
       ];
     }

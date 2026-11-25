@@ -48,10 +48,10 @@
                   <button
                     class="btn btn-soft btn-sm"
                     type="button"
-                    [disabled]="quizGeneratingId === r.id"
-                    (click)="generateQuiz(r)"
+                    [disabled]="generating"
+                    (click)="openGenerateModal(r)"
                   >
-                    {{ quizGeneratingId === r.id ? 'Generating…' : 'Generate quiz' }}
+                    Generate quiz
                   </button>
                 }
               </div>
@@ -231,36 +231,200 @@
   </div>
 }
 
+@if (generateModalOpen && generateResource) {
+  <div class="backdrop is-on" (click)="closeGenerateModal()"></div>
+  <div class="setu-dialog" role="dialog" aria-modal="true" aria-labelledby="genQuizTitle">
+    <div class="card card-pad" style="max-width: 520px" (click)="$event.stopPropagation()">
+      <h2 id="genQuizTitle" class="card-title">Generate quiz</h2>
+      <p class="field hint">From “{{ generateResource.title }}”. AI reads PDF text only (set pages to skip TOC).</p>
+      @if (generating) {
+        <div style="display: flex; align-items: center; gap: 12px; margin: 16px 0">
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Generating questions… this may take a minute.</span>
+        </div>
+      }
+      <form class="form-grid" [formGroup]="generateForm" (ngSubmit)="submitGenerate()">
+        <div class="field">
+          <label for="quizInstr">Instructions (optional)</label>
+          <textarea
+            id="quizInstr"
+            class="textarea"
+            rows="3"
+            maxlength="1000"
+            placeholder="e.g. Focus on exception handling"
+            formControlName="instructions"
+            [disabled]="generating"
+          ></textarea>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="quizPages">Pages (optional)</label>
+            <input
+              id="quizPages"
+              class="input"
+              placeholder="e.g. 12-20"
+              formControlName="pages"
+              [disabled]="generating"
+            />
+          </div>
+          <div class="field">
+            <label for="quizCount">Number of questions</label>
+            <select id="quizCount" class="select" formControlName="questionCount" [disabled]="generating">
+              <option [ngValue]="5">5</option>
+              <option [ngValue]="10">10</option>
+              <option [ngValue]="15">15</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="quizDiff">Difficulty</label>
+          <select id="quizDiff" class="select" formControlName="difficulty" [disabled]="generating">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        <div class="row" style="justify-content: flex-end; gap: 8px">
+          <button type="button" class="btn btn-ghost" [disabled]="generating" (click)="closeGenerateModal()">Cancel</button>
+          <button class="btn btn-primary" type="submit" [disabled]="generating">
+            {{ generating ? 'Generating…' : 'Generate' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
 @if (quizModalOpen && quizPreview) {
   <div class="backdrop is-on" (click)="closeQuizModal()"></div>
   <div class="setu-dialog" role="dialog" aria-modal="true" aria-labelledby="quizTitle">
     <div class="card card-pad" style="max-height: 85vh; overflow: auto" (click)="$event.stopPropagation()">
       <h2 id="quizTitle" class="card-title">{{ quizPreview.title }}</h2>
-      <p class="field hint">From {{ quizPreview.sourceResourceTitle }} · review before publishing.</p>
+      <p class="field hint">
+        From {{ quizPreview.sourceResourceTitle }} ·
+        @if (quizPreview.published) {
+          published — student scores below.
+        } @else {
+          draft — edit questions before publishing.
+        }
+      </p>
+
+      @if (quizPreview.published) {
+        <div class="card card-pad" style="margin: 16px 0; background: var(--surface-1, #f8fafc)">
+          <h3 class="card-title" style="font-size: 1rem; margin-bottom: 8px">Student scores</h3>
+          @if (attemptsLoading) {
+            <p class="field hint">Loading attempts…</p>
+          } @else if (quizAttempts.length === 0) {
+            <p class="field hint">No student attempts yet.</p>
+          } @else {
+            <table class="table" style="width: 100%; font-size: 0.9rem">
+              <thead>
+                <tr>
+                  <th style="text-align: left">Student</th>
+                  <th style="text-align: left">Score</th>
+                  <th style="text-align: left">Submitted</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (a of quizAttempts; track a.attemptId) {
+                  <tr>
+                    <td>{{ a.studentDisplayName }}</td>
+                    <td>{{ a.score }} / {{ a.totalQuestions }}</td>
+                    <td>{{ formatInstant(a.submittedAt) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </div>
+      }
+
       <div class="stack" style="gap: 16px; margin: 16px 0">
         @for (q of quizPreview.questions; track q.id; let qi = $index) {
           <div class="card card-pad" style="background: var(--surface-1, #f8fafc)">
-            <p style="font-weight: 600; margin: 0 0 8px">Q{{ qi + 1 }}. {{ q.questionText }}</p>
-            <ul style="margin: 0; padding-left: 20px">
-              @for (opt of q.options; track opt; let oi = $index) {
-                <li [style.font-weight]="oi === q.correctIndex ? '600' : 'normal'">
-                  {{ optionLabel(oi) }}. {{ opt }}
-                  @if (oi === q.correctIndex) {
-                    <span class="badge badge-primary" style="margin-left: 6px">Answer</span>
-                  }
-                </li>
+            @if (editingQuestionId === q.id && !quizPreview.published) {
+              <form class="form-grid" [formGroup]="editQuestionForm" (ngSubmit)="saveQuestion()">
+                <div class="field">
+                  <label>Question</label>
+                  <textarea class="textarea" rows="2" formControlName="questionText"></textarea>
+                </div>
+                @for (oi of [0, 1, 2, 3]; track oi) {
+                  <div class="field">
+                    <label>Option {{ optionLabel(oi) }}</label>
+                    <input class="input" [formControlName]="'option' + oi" />
+                  </div>
+                }
+                <div class="field">
+                  <label>Correct option</label>
+                  <select class="select" formControlName="correctIndex">
+                    <option [ngValue]="0">A</option>
+                    <option [ngValue]="1">B</option>
+                    <option [ngValue]="2">C</option>
+                    <option [ngValue]="3">D</option>
+                  </select>
+                </div>
+                <div class="row" style="gap: 8px">
+                  <button type="submit" class="btn btn-primary btn-sm" [disabled]="questionSavingId === q.id">
+                    {{ questionSavingId === q.id ? 'Saving…' : 'Save' }}
+                  </button>
+                  <button type="button" class="btn btn-ghost btn-sm" (click)="cancelEditQuestion()">Cancel</button>
+                </div>
+              </form>
+            } @else {
+              <div style="display: flex; justify-content: space-between; gap: 8px; align-items: flex-start">
+                <p style="font-weight: 600; margin: 0 0 8px; flex: 1">Q{{ qi + 1 }}. {{ q.questionText }}</p>
+                @if (!quizPreview.published) {
+                  <div style="display: flex; gap: 6px; flex-shrink: 0">
+                    <button type="button" class="btn btn-soft btn-sm" (click)="startEditQuestion(q)">Edit</button>
+                    <button
+                      type="button"
+                      class="btn btn-ghost btn-sm"
+                      [disabled]="questionDeletingId === q.id"
+                      (click)="deleteQuestion(q)"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                }
+              </div>
+              <ul style="margin: 0; padding-left: 20px">
+                @for (opt of q.options; track opt; let oi = $index) {
+                  <li [style.font-weight]="oi === q.correctIndex ? '600' : 'normal'">
+                    {{ optionLabel(oi) }}. {{ opt }}
+                    @if (oi === q.correctIndex && !quizPreview.published) {
+                      <span class="badge badge-primary" style="margin-left: 6px">Answer</span>
+                    }
+                  </li>
+                }
+              </ul>
+              @if (q.explanation && !quizPreview.published) {
+                <p class="field hint" style="margin-top: 8px; margin-bottom: 0">{{ q.explanation }}</p>
               }
-            </ul>
+            }
           </div>
         }
       </div>
-      <div class="row" style="justify-content: flex-end; gap: 8px">
-        <button type="button" class="btn btn-ghost" (click)="closeQuizModal()">Close</button>
-        @if (quizPreview.published) {
-          <button type="button" class="btn btn-soft" (click)="publishQuiz(false)">Unpublish</button>
-        } @else {
-          <button type="button" class="btn btn-primary" (click)="publishQuiz(true)">Publish quiz</button>
-        }
+      <div class="row" style="justify-content: space-between; gap: 8px; flex-wrap: wrap">
+        <div>
+          @if (!quizPreview.published) {
+            <button
+              type="button"
+              class="btn btn-ghost"
+              [disabled]="quizDeleting"
+              (click)="deleteDraftQuiz()"
+            >
+              {{ quizDeleting ? 'Deleting…' : 'Delete draft' }}
+            </button>
+          }
+        </div>
+        <div class="row" style="gap: 8px">
+          <button type="button" class="btn btn-ghost" (click)="closeQuizModal()">Close</button>
+          @if (quizPreview.published) {
+            <button type="button" class="btn btn-soft" (click)="publishQuiz(false)">Unpublish</button>
+          } @else {
+            <button type="button" class="btn btn-primary" (click)="publishQuiz(true)">Publish quiz</button>
+          }
+        </div>
       </div>
     </div>
   </div>

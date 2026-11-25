@@ -35,6 +35,11 @@ import { RouterLink } from '@angular/router';
         <a routerLink="/admin/enrollments" class="btn btn-soft btn-sm" style="margin-top: 12px">Manage</a>
       </div>
     </div>
+    <div class="card card-pad" style="max-width: 480px; margin-bottom: 24px">
+      <h2 class="card-title">AI setup</h2>
+      <p class="page-lead">Configure and test the OpenRouter / OpenAI connection used for quiz generation.</p>
+      <a routerLink="/admin/ai" class="btn btn-soft btn-sm" style="margin-top: 12px">Open AI setup</a>
+    </div>
     <div class="d-flex flex-wrap gap-2">
       <a routerLink="/admin/users" class="btn btn-outline-primary">Users</a>
       <a routerLink="/admin/courses" class="btn btn-outline-primary">Courses</a>

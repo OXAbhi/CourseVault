@@ -1,5 +1,6 @@
 import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { CourseApiService } from '../../services/course-api.service';
@@ -8,14 +9,35 @@ import { AssignmentApiService } from '../../services/assignment-api.service';
 import { BatchApiService } from '../../services/batch-api.service';
 import { QuizApiService } from '../../services/quiz-api.service';
 import { Assignment, Batch, Course, ResourceItem, ResourceType } from '../../models/portal.models';
-import { Quiz } from '../../models/quiz.models';
+import { Quiz, QuizAttemptSummary, QuizQuestion } from '../../models/quiz.models';
 import { datetimeLocalToIso, formatInstant } from '../../shared/utils/date.util';
+
+type QuizDifficulty = 'easy' | 'medium' | 'hard';
+type QuizCount = 5 | 10 | 15;
 
 @Component({
   selector: 'app-teacher-course-hub',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './teacher-course-hub.component.html',
+  styles: [
+    `
+      .spinner {
+        width: 22px;
+        height: 22px;
+        border: 2px solid rgba(0, 0, 0, 0.12);
+        border-top-color: var(--color-primary, #2563eb);
+        border-radius: 50%;
+        animation: hub-spin 0.7s linear infinite;
+        flex-shrink: 0;
+      }
+      @keyframes hub-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    `,
+  ],
 })
 export class TeacherCourseHubComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -39,7 +61,6 @@ export class TeacherCourseHubComponent implements OnInit {
   uploadError: string | null = null;
   uploading = false;
   uploadModalOpen = false;
-  /** 0–100 while bytes are sent to the API; 100 + uploading means server/Cloudinary is finishing. */
   uploadProgress = 0;
 
   assignMsg: string | null = null;
@@ -49,7 +70,18 @@ export class TeacherCourseHubComponent implements OnInit {
   quizzes: Quiz[] = [];
   quizPreview: Quiz | null = null;
   quizModalOpen = false;
-  quizGeneratingId: number | null = null;
+  quizAttempts: QuizAttemptSummary[] = [];
+  attemptsLoading = false;
+
+  generateModalOpen = false;
+  generateResource: ResourceItem | null = null;
+  generating = false;
+
+  editingQuestionId: number | null = null;
+  questionSavingId: number | null = null;
+  questionDeletingId: number | null = null;
+  quizDeleting = false;
+
   quizError: string | null = null;
   quizMsg: string | null = null;
 
@@ -68,6 +100,22 @@ export class TeacherCourseHubComponent implements OnInit {
     dueAt: ['', Validators.required],
     maxMarks: [20],
     published: [true],
+  });
+
+  readonly generateForm = this.fb.nonNullable.group({
+    instructions: ['', Validators.maxLength(1000)],
+    pages: [''],
+    questionCount: [5 as QuizCount],
+    difficulty: ['medium' as QuizDifficulty],
+  });
+
+  readonly editQuestionForm = this.fb.nonNullable.group({
+    questionText: ['', Validators.required],
+    option0: ['', Validators.required],
+    option1: ['', Validators.required],
+    option2: ['', Validators.required],
+    option3: ['', Validators.required],
+    correctIndex: [0, Validators.required],
   });
 
   get uploadStatusLabel(): string {
@@ -205,34 +253,85 @@ export class TeacherCourseHubComponent implements OnInit {
     return resource.resourceType !== 'LECTURE';
   }
 
-  generateQuiz(resource: ResourceItem): void {
-    if (this.quizGeneratingId != null) {
+  openGenerateModal(resource: ResourceItem): void {
+    if (this.generating) {
+      return;
+    }
+    this.quizError = null;
+    this.generateResource = resource;
+    this.generateForm.reset({
+      instructions: '',
+      pages: '',
+      questionCount: 5,
+      difficulty: 'medium',
+    });
+    this.generateModalOpen = true;
+  }
+
+  closeGenerateModal(): void {
+    if (this.generating) {
+      return;
+    }
+    this.generateModalOpen = false;
+    this.generateResource = null;
+  }
+
+  submitGenerate(): void {
+    if (!this.generateResource || this.generating) {
       return;
     }
     this.quizError = null;
     this.quizMsg = null;
-    this.quizGeneratingId = resource.id;
-    this.quizApi.generateFromResource(resource.id, 5).subscribe({
-      next: (quiz) => {
-        this.quizGeneratingId = null;
-        this.quizMsg = `Generated ${quiz.questionCount} questions from “${resource.title}”.`;
-        this.quizPreview = quiz;
-        this.quizModalOpen = true;
-        this.reloadQuizzes();
-      },
-      error: (err: HttpErrorResponse) => {
-        this.quizGeneratingId = null;
-        this.quizError = extractApiMessage(err) ?? 'Quiz generation failed.';
-      },
-    });
+    const raw = this.generateForm.getRawValue();
+    const pages = raw.pages.trim();
+    if (pages && !/^\d{1,4}(-\d{1,4})?$/.test(pages)) {
+      this.quizError = 'Pages must look like 12 or 12-20.';
+      return;
+    }
+    if (this.generateForm.controls.instructions.invalid) {
+      this.generateForm.markAllAsTouched();
+      this.quizError = 'Instructions must be at most 1000 characters.';
+      return;
+    }
+    this.generating = true;
+    const resource = this.generateResource;
+    this.quizApi
+      .generateFromResource(resource.id, {
+        questionCount: raw.questionCount,
+        difficulty: raw.difficulty,
+        instructions: raw.instructions.trim() || undefined,
+        pages: pages || undefined,
+      })
+      .subscribe({
+        next: (quiz) => {
+          this.generating = false;
+          this.generateModalOpen = false;
+          this.generateResource = null;
+          this.quizMsg = `Generated ${quiz.questionCount} questions from “${resource.title}”.`;
+          this.quizPreview = quiz;
+          this.quizAttempts = [];
+          this.quizModalOpen = true;
+          this.editingQuestionId = null;
+          this.reloadQuizzes();
+        },
+        error: (err: HttpErrorResponse) => {
+          this.generating = false;
+          this.quizError = extractApiMessage(err) ?? 'Quiz generation failed.';
+        },
+      });
   }
 
   openQuiz(quizId: number): void {
     this.quizError = null;
+    this.editingQuestionId = null;
     this.quizApi.get(quizId).subscribe({
       next: (q) => {
         this.quizPreview = q;
         this.quizModalOpen = true;
+        this.quizAttempts = [];
+        if (q.published) {
+          this.loadAttempts(q.id);
+        }
       },
       error: (err: HttpErrorResponse) => {
         this.quizError = extractApiMessage(err) ?? 'Could not load quiz.';
@@ -240,9 +339,24 @@ export class TeacherCourseHubComponent implements OnInit {
     });
   }
 
+  loadAttempts(quizId: number): void {
+    this.attemptsLoading = true;
+    this.quizApi.listAttempts(quizId).subscribe({
+      next: (list) => {
+        this.quizAttempts = list;
+        this.attemptsLoading = false;
+      },
+      error: () => {
+        this.attemptsLoading = false;
+      },
+    });
+  }
+
   closeQuizModal(): void {
     this.quizModalOpen = false;
     this.quizPreview = null;
+    this.quizAttempts = [];
+    this.editingQuestionId = null;
   }
 
   publishQuiz(published: boolean): void {
@@ -253,10 +367,113 @@ export class TeacherCourseHubComponent implements OnInit {
       next: (q) => {
         this.quizPreview = q;
         this.reloadQuizzes();
-        this.quizMsg = published ? 'Quiz published — students see it under Quizzes in the course hub.' : 'Quiz unpublished.';
+        this.editingQuestionId = null;
+        if (published) {
+          this.quizMsg = 'Quiz published — enrolled students were notified.';
+          this.loadAttempts(q.id);
+        } else {
+          this.quizAttempts = [];
+          this.quizMsg = 'Quiz unpublished.';
+        }
       },
       error: (err: HttpErrorResponse) => {
         this.quizError = extractApiMessage(err) ?? 'Could not update quiz.';
+      },
+    });
+  }
+
+  deleteDraftQuiz(): void {
+    if (!this.quizPreview || this.quizPreview.published || this.quizDeleting) {
+      return;
+    }
+    if (!confirm('Delete this draft quiz? This cannot be undone.')) {
+      return;
+    }
+    this.quizDeleting = true;
+    this.quizApi.deleteQuiz(this.quizPreview.id).subscribe({
+      next: () => {
+        this.quizDeleting = false;
+        this.closeQuizModal();
+        this.reloadQuizzes();
+        this.quizMsg = 'Draft quiz deleted.';
+      },
+      error: (err: HttpErrorResponse) => {
+        this.quizDeleting = false;
+        this.quizError = extractApiMessage(err) ?? 'Could not delete quiz.';
+      },
+    });
+  }
+
+  startEditQuestion(q: QuizQuestion): void {
+    if (!this.quizPreview || this.quizPreview.published) {
+      return;
+    }
+    this.editingQuestionId = q.id;
+    this.editQuestionForm.setValue({
+      questionText: q.questionText,
+      option0: q.options[0] ?? '',
+      option1: q.options[1] ?? '',
+      option2: q.options[2] ?? '',
+      option3: q.options[3] ?? '',
+      correctIndex: q.correctIndex,
+    });
+  }
+
+  cancelEditQuestion(): void {
+    this.editingQuestionId = null;
+  }
+
+  saveQuestion(): void {
+    if (!this.quizPreview || this.editingQuestionId == null) {
+      return;
+    }
+    if (this.editQuestionForm.invalid) {
+      this.editQuestionForm.markAllAsTouched();
+      return;
+    }
+    const raw = this.editQuestionForm.getRawValue();
+    const qid = this.editingQuestionId;
+    this.questionSavingId = qid;
+    this.quizApi
+      .updateQuestion(this.quizPreview.id, qid, {
+        questionText: raw.questionText.trim(),
+        options: [raw.option0.trim(), raw.option1.trim(), raw.option2.trim(), raw.option3.trim()],
+        correctIndex: raw.correctIndex,
+      })
+      .subscribe({
+        next: (quiz) => {
+          this.questionSavingId = null;
+          this.editingQuestionId = null;
+          this.quizPreview = quiz;
+          this.reloadQuizzes();
+        },
+        error: (err: HttpErrorResponse) => {
+          this.questionSavingId = null;
+          this.quizError = extractApiMessage(err) ?? 'Could not save question.';
+        },
+      });
+  }
+
+  deleteQuestion(q: QuizQuestion): void {
+    if (!this.quizPreview || this.quizPreview.published) {
+      return;
+    }
+    if (!confirm('Remove this question from the draft quiz?')) {
+      return;
+    }
+    this.questionDeletingId = q.id;
+    this.quizApi.deleteQuestion(this.quizPreview.id, q.id).subscribe({
+      next: (quiz) => {
+        this.questionDeletingId = null;
+        if (this.editingQuestionId === q.id) {
+          this.editingQuestionId = null;
+        }
+        this.quizPreview = quiz;
+        this.reloadQuizzes();
+      },
+      error: (err: HttpErrorResponse) => {
+        this.questionDeletingId = null;
+        this.quizError = extractApiMessage(err) ?? 'Could not delete question.';
       },
     });
   }

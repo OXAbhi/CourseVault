@@ -9,7 +9,7 @@ import { AiStatusResponse, AiTestResponse } from '../../models/ai.models';
   template: `
     <div class="page-head">
       <div>
-        <p class="page-kicker">Faculty · AI</p>
+        <p class="page-kicker">Admin · AI</p>
         <h1 class="page-title">AI connection</h1>
         <p class="page-lead">
           Check that your API key and model are loaded locally before quiz generation.
@@ -44,20 +44,6 @@ import { AiStatusResponse, AiTestResponse } from '../../models/ai.models';
             <dt>API base URL</dt>
             <dd>{{ status.baseUrl || '—' }}</dd>
           </div>
-          @if (status.keyPrefix) {
-            <div>
-              <dt>Key prefix (loaded in JVM)</dt>
-              <dd>
-                <code>{{ status.keyPrefix }}</code>
-                @if (!status.keyPrefix.startsWith('sk-or-v1')) {
-                  <span class="form-error" style="display: block; margin-top: 6px">
-                    OpenRouter needs a key starting with <code>sk-or-v1</code>. If this shows your old key, remove
-                    Windows / IDE <code>OPENAI_API_KEY</code> and restart the API.
-                  </span>
-                }
-              </dd>
-            </div>
-          }
         </dl>
         @if (!status.configured) {
           <p class="page-lead" style="margin-top: 12px">

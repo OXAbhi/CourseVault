@@ -27,10 +27,9 @@ public class ResourceQuizController {
     @PreAuthorize("hasAnyRole('TEACHER','ADMIN')")
     public ResponseEntity<QuizResponse> generate(
             @PathVariable Long resourceId,
-            @Valid @RequestBody(required = false) QuizGenerateRequest request
+            @Valid @RequestBody QuizGenerateRequest request
     ) {
-        QuizGenerateRequest body = request == null ? new QuizGenerateRequest(null) : request;
-        QuizResponse quiz = quizService.generateFromResource(resourceId, body);
+        QuizResponse quiz = quizService.generateFromResource(resourceId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(quiz);
     }
 }

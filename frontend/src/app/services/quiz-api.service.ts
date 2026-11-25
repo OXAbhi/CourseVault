@@ -2,7 +2,13 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Quiz, QuizAttempt } from '../models/quiz.models';
+import {
+  Quiz,
+  QuizAttempt,
+  QuizAttemptSummary,
+  QuizGenerateRequest,
+  QuizQuestionUpdateRequest,
+} from '../models/quiz.models';
 
 @Injectable({ providedIn: 'root' })
 export class QuizApiService {
@@ -17,14 +23,32 @@ export class QuizApiService {
     return this.http.get<Quiz>(`${this.api}/api/quizzes/${quizId}`);
   }
 
-  generateFromResource(resourceId: number, questionCount = 5): Observable<Quiz> {
-    return this.http.post<Quiz>(`${this.api}/api/resources/${resourceId}/quizzes/generate`, {
-      questionCount,
-    });
+  generateFromResource(resourceId: number, body: QuizGenerateRequest): Observable<Quiz> {
+    return this.http.post<Quiz>(`${this.api}/api/resources/${resourceId}/quizzes/generate`, body);
   }
 
   publish(quizId: number, published: boolean): Observable<Quiz> {
     return this.http.patch<Quiz>(`${this.api}/api/quizzes/${quizId}/publish`, { published });
+  }
+
+  deleteQuiz(quizId: number): Observable<void> {
+    return this.http.delete<void>(`${this.api}/api/quizzes/${quizId}`);
+  }
+
+  updateQuestion(
+    quizId: number,
+    questionId: number,
+    body: QuizQuestionUpdateRequest
+  ): Observable<Quiz> {
+    return this.http.put<Quiz>(`${this.api}/api/quizzes/${quizId}/questions/${questionId}`, body);
+  }
+
+  deleteQuestion(quizId: number, questionId: number): Observable<Quiz> {
+    return this.http.delete<Quiz>(`${this.api}/api/quizzes/${quizId}/questions/${questionId}`);
+  }
+
+  listAttempts(quizId: number): Observable<QuizAttemptSummary[]> {
+    return this.http.get<QuizAttemptSummary[]>(`${this.api}/api/quizzes/${quizId}/attempts`);
   }
 
   submitAttempt(

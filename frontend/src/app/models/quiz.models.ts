@@ -4,6 +4,7 @@ export interface QuizQuestion {
   options: string[];
   correctIndex: number;
   sortOrder: number;
+  explanation?: string | null;
 }
 
 export interface Quiz {
@@ -17,6 +18,29 @@ export interface Quiz {
   createdByUsername: string;
   questionCount: number;
   questions: QuizQuestion[];
+}
+
+export interface QuizGenerateRequest {
+  instructions?: string;
+  pages?: string;
+  questionCount: 5 | 10 | 15;
+  difficulty: 'easy' | 'medium' | 'hard';
+}
+
+export interface QuizQuestionUpdateRequest {
+  questionText: string;
+  options: [string, string, string, string];
+  correctIndex: number;
+  explanation?: string;
+}
+
+export interface QuizAttemptSummary {
+  attemptId: number;
+  studentUsername: string;
+  studentDisplayName: string;
+  score: number;
+  totalQuestions: number;
+  submittedAt: string;
 }
 
 export interface QuizAttemptResult {

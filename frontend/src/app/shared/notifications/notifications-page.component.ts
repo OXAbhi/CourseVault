@@ -70,6 +70,12 @@ export class NotificationsPageComponent implements OnInit {
         return [`${prefix}/assignments`, id, 'grade'];
       }
     }
+    if (link.startsWith('/student/quizzes/')) {
+      const id = link.replace('/student/quizzes/', '');
+      if (role === 'STUDENT') {
+        return [`${prefix}/quizzes`, id];
+      }
+    }
     return null;
   }
 }

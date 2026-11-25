@@ -50,6 +50,9 @@ public class QuizQuestion {
     @Column(name = "sort_order", nullable = false)
     private int sortOrder;
 
+    @Column(columnDefinition = "TEXT")
+    private String explanation;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
